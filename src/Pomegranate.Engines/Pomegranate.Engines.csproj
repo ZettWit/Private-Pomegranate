@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Pomegranate.Engines</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pomegranate.Core\Pomegranate.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Pomegranate.Engines.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" />
+    <PackageReference Include="SharpCompress" />
+  </ItemGroup>
+</Project>

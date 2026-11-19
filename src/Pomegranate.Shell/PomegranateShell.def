@@ -1,0 +1,4 @@
+LIBRARY "Pomegranate.Shell.dll"
+EXPORTS
+    DllGetClassObject PRIVATE
+    DllCanUnloadNow PRIVATE

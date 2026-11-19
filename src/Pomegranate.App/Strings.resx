@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Action_CopyPath" xml:space="preserve"><value>Copy path</value></data>
+  <data name="Action_CopyTo" xml:space="preserve"><value>Copy to…</value></data>
+  <data name="Action_CopyToPick" xml:space="preserve"><value>Copy to folder</value></data>
+  <data name="Action_Float" xml:space="preserve"><value>Float</value></data>
+  <data name="Action_MoveTo" xml:space="preserve"><value>Move to…</value></data>
+  <data name="Action_MoveToPick" xml:space="preserve"><value>Move to folder</value></data>
+  <data name="Action_Share" xml:space="preserve"><value>Share</value></data>
+  <data name="Action_Terminal" xml:space="preserve"><value>Terminal</value></data>
+  <data name="Float_Clear" xml:space="preserve"><value>Clear</value></data>
+  <data name="Float_Hint" xml:space="preserve"><value>Drag files from here into any app.</value></data>
+  <data name="Float_Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="Float_Title" xml:space="preserve"><value>Float</value></data>
+  <data name="Notify_ActionFailedTitle" xml:space="preserve"><value>That didn't work</value></data>
+  <data name="Notify_ConvertedTitle" xml:space="preserve"><value>Converted to {0}</value></data>
+  <data name="Notify_FileCount" xml:space="preserve"><value>{0} files</value></data>
+  <data name="Notify_HotkeyTaken" xml:space="preserve"><value>{0} is already used by another app. Pick a different hotkey in Settings.</value></data>
+  <data name="Notify_HotkeyTakenTitle" xml:space="preserve"><value>Hotkey unavailable</value></data>
+  <data name="Notify_NoSelection" xml:space="preserve"><value>Select files in File Explorer or on the desktop first.</value></data>
+  <data name="Notify_NoSelectionTitle" xml:space="preserve"><value>Nothing selected</value></data>
+  <data name="Notify_SomeFailedTitle" xml:space="preserve"><value>{0} of {1} converted</value></data>
+  <data name="Progress_CancelAll" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Progress_Canceled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Progress_Done" xml:space="preserve"><value>Done</value></data>
+  <data name="Progress_Failed" xml:space="preserve"><value>Failed</value></data>
+  <data name="Progress_Queued" xml:space="preserve"><value>Waiting</value></data>
+  <data name="Progress_Skipped" xml:space="preserve"><value>Skipped</value></data>
+  <data name="Progress_Title" xml:space="preserve"><value>Converting</value></data>
+  <data name="Settings_AacKbps" xml:space="preserve"><value>AAC bitrate (MP4, MOV, MKV, M4A)</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>About</value></data>
+  <data name="Settings_AboutText" xml:space="preserve"><value>An offline file converter. Everything runs on this PC; nothing is uploaded.</value></data>
+  <data name="Settings_ActionsKey" xml:space="preserve"><value>Actions wheel</value></data>
+  <data name="Settings_Activation" xml:space="preserve"><value>Opening the wheel</value></data>
+  <data name="Settings_AddFolder" xml:space="preserve"><value>Add folder…</value></data>
+  <data name="Settings_AvifQuality" xml:space="preserve"><value>AVIF quality</value></data>
+  <data name="Settings_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="Settings_ConvertKey" xml:space="preserve"><value>Convert wheel</value></data>
+  <data name="Settings_CrfHint" xml:space="preserve"><value>Lower is better quality and bigger files.</value></data>
+  <data name="Settings_EngineDng" xml:space="preserve"><value>RAW → DNG: dnglab found</value></data>
+  <data name="Settings_EngineDngMissing" xml:space="preserve"><value>RAW → DNG: dnglab not found (DNG output hidden)</value></data>
+  <data name="Settings_EngineImages" xml:space="preserve"><value>Images, archives, subtitles: built in</value></data>
+  <data name="Settings_EngineMedia" xml:space="preserve"><value>Audio and video: FFmpeg found</value></data>
+  <data name="Settings_EngineMediaMissing" xml:space="preserve"><value>Audio and video: FFmpeg not found (audio and video conversions hidden)</value></data>
+  <data name="Settings_ExcludedApps" xml:space="preserve"><value>Apps where the wheel never opens</value></data>
+  <data name="Settings_ExcludedAppsHint" xml:space="preserve"><value>One program name per line, e.g. game.exe</value></data>
+  <data name="Settings_General" xml:space="preserve"><value>General</value></data>
+  <data name="Settings_GifFps" xml:space="preserve"><value>GIF frames per second</value></data>
+  <data name="Settings_GifWidth" xml:space="preserve"><value>GIF maximum width</value></data>
+  <data name="Settings_H264Crf" xml:space="preserve"><value>Video quality (H.264 CRF)</value></data>
+  <data name="Settings_H264Preset" xml:space="preserve"><value>Video encoding speed</value></data>
+  <data name="Settings_HoldDelay" xml:space="preserve"><value>Hold delay</value></data>
+  <data name="Settings_HoldDelayHint" xml:space="preserve"><value>How long to hold the key while dragging before the wheel opens. Quick presses keep Explorer's normal move and copy.</value></data>
+  <data name="Settings_Hotkey" xml:space="preserve"><value>Hotkey</value></data>
+  <data name="Settings_HotkeyHint" xml:space="preserve"><value>Opens the wheel for the files selected in File Explorer. Click the box and press a new combination.</value></data>
+  <data name="Settings_JpegQuality" xml:space="preserve"><value>JPEG quality</value></data>
+  <data name="Settings_Licenses" xml:space="preserve"><value>Licenses</value></data>
+  <data name="Settings_Mp3Hint" xml:space="preserve"><value>V0 is best, V9 is smallest. V2 is about 190 kbps.</value></data>
+  <data name="Settings_Mp3Quality" xml:space="preserve"><value>MP3 quality</value></data>
+  <data name="Settings_OpenLogs" xml:space="preserve"><value>Open logs</value></data>
+  <data name="Settings_OpusKbps" xml:space="preserve"><value>Opus bitrate (WebM, Opus)</value></data>
+  <data name="Settings_Output" xml:space="preserve"><value>Where converted files go</value></data>
+  <data name="Settings_OutputFolder" xml:space="preserve"><value>In this folder</value></data>
+  <data name="Settings_OutputNextTo" xml:space="preserve"><value>Next to the original</value></data>
+  <data name="Settings_PauseFullScreen" xml:space="preserve"><value>Pause while a full-screen app or game is open</value></data>
+  <data name="Settings_PinnedFolders" xml:space="preserve"><value>Folders for Copy to… and Move to…</value></data>
+  <data name="Settings_PinnedFoldersHint" xml:space="preserve"><value>Pinned folders come first, then the ones you used recently.</value></data>
+  <data name="Settings_Quality" xml:space="preserve"><value>Quality</value></data>
+  <data name="Settings_RemoveFolder" xml:space="preserve"><value>Remove</value></data>
+  <data name="Settings_ResetQuality" xml:space="preserve"><value>Reset to defaults</value></data>
+  <data name="Settings_ShowWelcome" xml:space="preserve"><value>Show welcome</value></data>
+  <data name="Settings_StartWithWindows" xml:space="preserve"><value>Start when Windows starts</value></data>
+  <data name="Settings_Title" xml:space="preserve"><value>Pomegranate Settings</value></data>
+  <data name="Settings_ToolsKey" xml:space="preserve"><value>Tools wheel</value></data>
+  <data name="Settings_VorbisQuality" xml:space="preserve"><value>OGG Vorbis quality</value></data>
+  <data name="Settings_Vp9Crf" xml:space="preserve"><value>WebM quality (VP9 CRF)</value></data>
+  <data name="Settings_WebPQuality" xml:space="preserve"><value>WebP quality</value></data>
+  <data name="Settings_WmaKbps" xml:space="preserve"><value>WMA bitrate (WMV, WMA)</value></data>
+  <data name="Tray_Help" xml:space="preserve"><value>Help</value></data>
+  <data name="Tray_Pause" xml:space="preserve"><value>Pause</value></data>
+  <data name="Tray_PausedSuffix" xml:space="preserve"><value>paused</value></data>
+  <data name="Tray_Quit" xml:space="preserve"><value>Quit</value></data>
+  <data name="Tray_Resume" xml:space="preserve"><value>Resume</value></data>
+  <data name="Tray_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Welcome_ActionsLine" xml:space="preserve"><value>Share, float, copy, move, copy the path or open a terminal</value></data>
+  <data name="Welcome_ConvertLine" xml:space="preserve"><value>Convert to another format</value></data>
+  <data name="Welcome_Done" xml:space="preserve"><value>Get started</value></data>
+  <data name="Welcome_Heading" xml:space="preserve"><value>Welcome to Pomegranate</value></data>
+  <data name="Welcome_HotkeyLine" xml:space="preserve"><value>No drag handy? Select files in File Explorer and press</value></data>
+  <data name="Welcome_HowTo" xml:space="preserve"><value>Start dragging any file, then hold a key. A wheel opens at the cursor; drop the file on what you want.</value></data>
+  <data name="Welcome_OpenSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Welcome_OpenTryFolder" xml:space="preserve"><value>Open the sample folder</value></data>
+  <data name="Welcome_SampleHint" xml:space="preserve"><value>Drag me, then hold Shift</value></data>
+  <data name="Welcome_SampleName" xml:space="preserve"><value>Sample image to drag</value></data>
+  <data name="Welcome_Subheading" xml:space="preserve"><value>Convert files without leaving where you are.</value></data>
+  <data name="Welcome_Title" xml:space="preserve"><value>Welcome to Pomegranate</value></data>
+  <data name="Welcome_ToolsLine" xml:space="preserve"><value>File tools (coming in a later version)</value></data>
+  <data name="Welcome_TryIt" xml:space="preserve"><value>Try it</value></data>
+  <data name="Wheel_Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="Wheel_Convert" xml:space="preserve"><value>Convert</value></data>
+  <data name="Wheel_FoldersActionsOnly" xml:space="preserve"><value>Folders can't be converted. Use the Actions wheel.</value></data>
+  <data name="Wheel_More" xml:space="preserve"><value>More</value></data>
+  <data name="Wheel_NoSharedFormats" xml:space="preserve"><value>These files have no format in common.</value></data>
+  <data name="Wheel_NothingToConvert" xml:space="preserve"><value>Nothing to convert.</value></data>
+  <data name="Wheel_Tools" xml:space="preserve"><value>Tools</value></data>
+  <data name="Wheel_ToolsComingSoon" xml:space="preserve"><value>File tools are coming in a later version.</value></data>
+  <data name="Wheel_UnsupportedType" xml:space="preserve"><value>Pomegranate can't convert this type of file.</value></data>
+  <data name="Wheel_VirtualFiles" xml:space="preserve"><value>Save the file first, then drag it from its folder.</value></data>
+</root>

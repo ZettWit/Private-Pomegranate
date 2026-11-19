@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Pomegranate.App/Pomegranate.App.csproj" />
+    <Project Path="src/Pomegranate.Core/Pomegranate.Core.csproj" />
+    <Project Path="src/Pomegranate.Engines/Pomegranate.Engines.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Pomegranate.Core.Tests/Pomegranate.Core.Tests.csproj" />
+    <Project Path="tests/Pomegranate.Engines.Tests/Pomegranate.Engines.Tests.csproj" />
+  </Folder>
+</Solution>

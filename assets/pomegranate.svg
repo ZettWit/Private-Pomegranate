@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Pomegranate app icon: an original, simple fruit with a small crown. -->
+  <defs>
+    <radialGradient id="body" cx="38%" cy="36%" r="72%">
+      <stop offset="0" stop-color="#F0525A"/>
+      <stop offset="0.55" stop-color="#C0242F"/>
+      <stop offset="1" stop-color="#7C1220"/>
+    </radialGradient>
+    <linearGradient id="crown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A3202B"/>
+      <stop offset="1" stop-color="#6E0F1A"/>
+    </linearGradient>
+  </defs>
+  <path d="M96 70 L100 26 L114 50 L128 18 L142 50 L156 26 L160 70 Z" fill="url(#crown)"/>
+  <ellipse cx="128" cy="150" rx="100" ry="94" fill="url(#body)"/>
+  <ellipse cx="90" cy="112" rx="30" ry="17" fill="#FFFFFF" opacity="0.28" transform="rotate(-38 90 112)"/>
+  <path d="M112 60 Q128 70 144 60" stroke="#5E0C16" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.6"/>
+</svg>

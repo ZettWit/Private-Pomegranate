@@ -1,0 +1,19 @@
+# Build output
+bin/
+obj/
+artifacts/
+*.user
+*.suo
+.vs/
+.vscode/
+*.binlog
+TestResults/
+
+# Engine binaries fetched at build time (see tools/fetch-engines.ps1)
+engines/
+
+# MSIX output
+AppPackages/
+*.msix
+*.msixbundle
+*.appx

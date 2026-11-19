@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            arch: x64
+          - runner: windows-11-arm
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    name: Build and test (${{ matrix.arch }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Fetch engines
+        shell: pwsh
+        run: ./tools/fetch-engines.ps1 -Arch ${{ matrix.arch }}
+
+      - name: Build
+        run: dotnet build -c Release
+
+      # Includes the conversion matrix against real engines and the no-networking check.
+      - name: Test
+        run: dotnet test -c Release --no-build
+
+      - name: Build right-click menu DLL
+        shell: pwsh
+        run: ./tools/build-shell.ps1 -Arch ${{ matrix.arch }}
+
+      - name: Package MSIX (unsigned)
+        shell: pwsh
+        run: ./tools/package-msix.ps1 -Arch ${{ matrix.arch }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pomegranate-${{ matrix.arch }}
+          path: artifacts/msix/*.msix
+          if-no-files-found: error

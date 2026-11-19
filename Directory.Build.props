@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Product>Pomegranate</Product>
+    <Company>Pomegranate contributors</Company>
+    <Copyright>Copyright (c) 2026 Pomegranate contributors</Copyright>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+</Project>

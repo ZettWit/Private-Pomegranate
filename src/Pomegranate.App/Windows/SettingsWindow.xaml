@@ -1,0 +1,215 @@
+<Window x:Class="Pomegranate.App.Windows.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:Pomegranate.App.Infrastructure"
+        Title="{l:Loc Settings_Title}"
+        Icon="pack://application:,,,/Assets/Pomegranate-256.png"
+        Width="680" Height="760" MinWidth="520" MinHeight="400"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="Section" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,24,0,8" />
+        </Style>
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="16,12" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style x:Key="Hint" TargetType="TextBlock">
+            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+        </Style>
+        <Style x:Key="Value" TargetType="TextBlock">
+            <Setter Property="Width" Value="56" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,8,28,28">
+
+            <!-- Activation -->
+            <TextBlock Style="{StaticResource Section}" Text="{l:Loc Settings_Activation}" />
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="160" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{l:Loc Settings_ConvertKey}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Keys}" SelectedItem="{Binding ConvertKey}" Margin="0,4" />
+                    <TextBlock Grid.Row="1" Text="{l:Loc Settings_ToolsKey}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Keys}" SelectedItem="{Binding ToolsKey}" Margin="0,4" />
+                    <TextBlock Grid.Row="2" Text="{l:Loc Settings_ActionsKey}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Keys}" SelectedItem="{Binding ActionsKey}" Margin="0,4" />
+                    <StackPanel Grid.Row="3" Margin="0,8,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{l:Loc Settings_HoldDelay}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{l:Loc Settings_HoldDelayHint}" />
+                    </StackPanel>
+                    <DockPanel Grid.Row="3" Grid.Column="1" Margin="0,8,0,0" VerticalAlignment="Center">
+                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Value}" Text="{Binding HoldDelayMs, StringFormat={}{0} ms}" />
+                        <Slider Minimum="0" Maximum="1000" TickFrequency="50" IsSnapToTickEnabled="True" Value="{Binding HoldDelayMs}" />
+                    </DockPanel>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{l:Loc Settings_Hotkey}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{l:Loc Settings_HotkeyHint}" />
+                    </StackPanel>
+                    <TextBox Grid.Column="1" x:Name="HotkeyBox" Text="{Binding HotkeyText, Mode=OneWay}" IsReadOnly="True"
+                             VerticalAlignment="Center" PreviewKeyDown="OnHotkeyKeyDown"
+                             AutomationProperties.Name="{l:Loc Settings_Hotkey}" />
+                </Grid>
+            </Border>
+
+            <!-- Output -->
+            <TextBlock Style="{StaticResource Section}" Text="{l:Loc Settings_Output}" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <RadioButton Content="{l:Loc Settings_OutputNextTo}" IsChecked="{Binding OutputNextToOriginal}" Margin="0,2" />
+                    <RadioButton x:Name="FixedFolderRadio" Content="{l:Loc Settings_OutputFolder}" Margin="0,2"
+                                 IsChecked="{Binding OutputNextToOriginal, Mode=OneWay, Converter={x:Static l:InverseBool.Instance}}"
+                                 Checked="OnFixedFolderChecked" />
+                    <DockPanel Margin="28,6,0,0" IsEnabled="{Binding IsChecked, ElementName=FixedFolderRadio}">
+                        <Button DockPanel.Dock="Right" Content="{l:Loc Settings_Browse}" Click="OnBrowseOutput" Margin="8,0,0,0" />
+                        <TextBox Text="{Binding OutputFolder, Mode=OneWay}" IsReadOnly="True" />
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- General -->
+            <TextBlock Style="{StaticResource Section}" Text="{l:Loc Settings_General}" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <CheckBox Content="{l:Loc Settings_StartWithWindows}" IsChecked="{Binding StartWithWindows}" Margin="0,2" />
+                    <CheckBox Content="{l:Loc Settings_PauseFullScreen}" IsChecked="{Binding PauseInFullScreen}" Margin="0,2" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="{l:Loc Settings_ExcludedApps}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:Loc Settings_ExcludedAppsHint}" />
+                    <TextBox Text="{Binding ExcludedAppsText, UpdateSourceTrigger=LostFocus}" AcceptsReturn="True"
+                             MinHeight="64" Margin="0,8,0,0" TextWrapping="Wrap"
+                             AutomationProperties.Name="{l:Loc Settings_ExcludedApps}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="{l:Loc Settings_PinnedFolders}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:Loc Settings_PinnedFoldersHint}" />
+                    <ListBox x:Name="PinnedList" ItemsSource="{Binding PinnedFolders}" MinHeight="40" MaxHeight="160" Margin="0,8,0,0"
+                             AutomationProperties.Name="{l:Loc Settings_PinnedFolders}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                        <Button Content="{l:Loc Settings_AddFolder}" Click="OnAddPinned" Margin="0,0,8,0" />
+                        <Button Content="{l:Loc Settings_RemoveFolder}" Click="OnRemovePinned" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Quality -->
+            <DockPanel Margin="0,24,0,8">
+                <Button DockPanel.Dock="Right" Content="{l:Loc Settings_ResetQuality}" Click="OnResetQuality" VerticalAlignment="Center" />
+                <TextBlock Style="{StaticResource Section}" Margin="0" Text="{l:Loc Settings_Quality}" />
+            </DockPanel>
+            <Border Style="{StaticResource Card}">
+                <Grid x:Name="QualityGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+                        <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="{l:Loc Settings_JpegQuality}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="0" Grid.Column="1" Minimum="10" Maximum="100" Value="{Binding JpegQuality}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding JpegQuality}" />
+
+                    <TextBlock Grid.Row="1" Text="{l:Loc Settings_WebPQuality}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="1" Grid.Column="1" Minimum="10" Maximum="100" Value="{Binding WebPQuality}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding WebPQuality}" />
+
+                    <TextBlock Grid.Row="2" Text="{l:Loc Settings_AvifQuality}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="2" Grid.Column="1" Minimum="10" Maximum="100" Value="{Binding AvifQuality}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding AvifQuality}" />
+
+                    <TextBlock Grid.Row="3" Text="{l:Loc Settings_H264Crf}" VerticalAlignment="Center" ToolTip="{l:Loc Settings_CrfHint}" />
+                    <Slider Grid.Row="3" Grid.Column="1" Minimum="14" Maximum="35" Value="{Binding H264Crf}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding H264Crf}" />
+
+                    <TextBlock Grid.Row="4" Text="{l:Loc Settings_H264Preset}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Presets}" SelectedItem="{Binding H264Preset}" Margin="0,6" />
+
+                    <TextBlock Grid.Row="5" Text="{l:Loc Settings_Vp9Crf}" VerticalAlignment="Center" ToolTip="{l:Loc Settings_CrfHint}" />
+                    <Slider Grid.Row="5" Grid.Column="1" Minimum="15" Maximum="50" Value="{Binding Vp9Crf}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="5" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Vp9Crf}" />
+
+                    <TextBlock Grid.Row="6" Text="{l:Loc Settings_AacKbps}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="6" Grid.Column="1" Minimum="64" Maximum="320" Value="{Binding AacKbps}" IsSnapToTickEnabled="True" TickFrequency="32" Margin="0,6" />
+                    <TextBlock Grid.Row="6" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding AacKbps, StringFormat={}{0} k}" />
+
+                    <TextBlock Grid.Row="7" Text="{l:Loc Settings_OpusKbps}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="7" Grid.Column="1" Minimum="32" Maximum="256" Value="{Binding OpusKbps}" IsSnapToTickEnabled="True" TickFrequency="16" Margin="0,6" />
+                    <TextBlock Grid.Row="7" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding OpusKbps, StringFormat={}{0} k}" />
+
+                    <TextBlock Grid.Row="8" Text="{l:Loc Settings_WmaKbps}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="8" Grid.Column="1" Minimum="64" Maximum="320" Value="{Binding WmaKbps}" IsSnapToTickEnabled="True" TickFrequency="32" Margin="0,6" />
+                    <TextBlock Grid.Row="8" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding WmaKbps, StringFormat={}{0} k}" />
+
+                    <TextBlock Grid.Row="9" Text="{l:Loc Settings_Mp3Quality}" VerticalAlignment="Center" ToolTip="{l:Loc Settings_Mp3Hint}" />
+                    <Slider Grid.Row="9" Grid.Column="1" Minimum="0" Maximum="9" Value="{Binding Mp3VbrQuality}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="9" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Mp3VbrQuality, StringFormat=V{0}}" />
+
+                    <TextBlock Grid.Row="10" Text="{l:Loc Settings_VorbisQuality}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="10" Grid.Column="1" Minimum="0" Maximum="10" Value="{Binding VorbisQuality}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="10" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding VorbisQuality}" />
+
+                    <TextBlock Grid.Row="11" Text="{l:Loc Settings_GifFps}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="11" Grid.Column="1" Minimum="5" Maximum="30" Value="{Binding GifFps}" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,6" />
+                    <TextBlock Grid.Row="11" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding GifFps}" />
+
+                    <TextBlock Grid.Row="12" Text="{l:Loc Settings_GifWidth}" VerticalAlignment="Center" />
+                    <Slider Grid.Row="12" Grid.Column="1" Minimum="160" Maximum="1280" Value="{Binding GifMaxWidth}" IsSnapToTickEnabled="True" TickFrequency="80" Margin="0,6" />
+                    <TextBlock Grid.Row="12" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding GifMaxWidth, StringFormat={}{0} px}" />
+                </Grid>
+            </Border>
+
+            <!-- About -->
+            <TextBlock Style="{StaticResource Section}" Text="{l:Loc Settings_About}" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock>
+                        <Run Text="Pomegranate" FontWeight="SemiBold" />
+                        <Run Text="{Binding Version, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:Loc Settings_AboutText}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{Binding EngineStatus}" Margin="0,8,0,0" />
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <Button Content="{l:Loc Settings_ShowWelcome}" Click="OnShowWelcome" Margin="0,0,8,0" />
+                        <Button Content="{l:Loc Settings_OpenLogs}" Click="OnOpenLogs" Margin="0,0,8,0" />
+                        <Button Content="{l:Loc Settings_Licenses}" Click="OnOpenLicenses" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

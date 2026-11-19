@@ -1,0 +1,71 @@
+<Window x:Class="Pomegranate.App.Windows.WelcomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:Pomegranate.App.Infrastructure"
+        Title="{l:Loc Welcome_Title}"
+        Icon="pack://application:,,,/Assets/Pomegranate-256.png"
+        Width="560" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="KeyChip" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1,1,1,2" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="10,3" />
+            <Setter Property="MinWidth" Value="56" />
+            <Setter Property="Margin" Value="0,4,12,4" />
+        </Style>
+    </Window.Resources>
+    <StackPanel Margin="32,24,32,24">
+        <StackPanel Orientation="Horizontal">
+            <Image Source="pack://application:,,,/Assets/Pomegranate-256.png" Width="56" Height="56" Margin="0,0,16,0" />
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="{l:Loc Welcome_Heading}" FontSize="24" FontWeight="SemiBold" />
+                <TextBlock Text="{l:Loc Welcome_Subheading}" Opacity="0.75" TextWrapping="Wrap" />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Text="{l:Loc Welcome_HowTo}" TextWrapping="Wrap" Margin="0,20,0,8" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition /><RowDefinition /><RowDefinition />
+            </Grid.RowDefinitions>
+            <Border Style="{StaticResource KeyChip}"><TextBlock x:Name="ConvertKeyText" HorizontalAlignment="Center" /></Border>
+            <TextBlock Grid.Column="1" Text="{l:Loc Welcome_ConvertLine}" VerticalAlignment="Center" />
+            <Border Grid.Row="1" Style="{StaticResource KeyChip}"><TextBlock x:Name="ToolsKeyText" HorizontalAlignment="Center" /></Border>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{l:Loc Welcome_ToolsLine}" VerticalAlignment="Center" />
+            <Border Grid.Row="2" Style="{StaticResource KeyChip}"><TextBlock x:Name="ActionsKeyText" HorizontalAlignment="Center" /></Border>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{l:Loc Welcome_ActionsLine}" VerticalAlignment="Center" />
+        </Grid>
+
+        <TextBlock Text="{l:Loc Welcome_TryIt}" FontWeight="SemiBold" Margin="0,20,0,8" />
+        <Border x:Name="SampleCard" Cursor="Hand" HorizontalAlignment="Left" Padding="12" CornerRadius="8"
+                BorderThickness="1" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                MouseLeftButtonDown="OnSampleMouseDown" MouseMove="OnSampleMouseMove"
+                AutomationProperties.Name="{l:Loc Welcome_SampleName}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Assets/Pomegranate-256.png" Width="40" Height="40" />
+                <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="sample.png" FontWeight="SemiBold" />
+                    <TextBlock Text="{l:Loc Welcome_SampleHint}" Opacity="0.7" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <TextBlock Margin="0,8,0,0" Opacity="0.7" TextWrapping="Wrap">
+            <Run Text="{l:Loc Welcome_HotkeyLine}" />
+            <Run x:Name="HotkeyRun" FontWeight="SemiBold" />
+        </TextBlock>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
+            <Button Content="{l:Loc Welcome_OpenTryFolder}" Click="OnOpenFolder" Margin="0,0,8,0" />
+            <Button Content="{l:Loc Welcome_OpenSettings}" Click="OnOpenSettings" Margin="0,0,8,0" />
+            <Button Content="{l:Loc Welcome_Done}" Click="OnDone" IsDefault="True" />
+        </StackPanel>
+    </StackPanel>
+</Window>
