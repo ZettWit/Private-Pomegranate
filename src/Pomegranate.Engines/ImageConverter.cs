@@ -10,8 +10,14 @@ public sealed class ImageConverter : IConverter
 {
     public EngineKind Engine => EngineKind.Image;
 
-    public Task ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken) =>
-        Task.Run(() => Convert(request, progress, cancellationToken), cancellationToken);
+    public Task<ConversionOutput> ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken) =>
+        Task.Run(
+            () =>
+            {
+                Convert(request, progress, cancellationToken);
+                return ConversionOutput.Single;
+            },
+            cancellationToken);
 
     private static void Convert(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
     {

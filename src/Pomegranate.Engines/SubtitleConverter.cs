@@ -16,7 +16,7 @@ public sealed partial class SubtitleConverter : IConverter
 
     public EngineKind Engine => EngineKind.Subtitle;
 
-    public async Task ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
+    public async Task<ConversionOutput> ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
     {
         var text = await File.ReadAllTextAsync(request.SourcePath, cancellationToken).ConfigureAwait(false);
         var cues = request.Rule.From == KnownFormats.Vtt ? ParseVtt(text) : ParseSrt(text);
@@ -36,6 +36,7 @@ public sealed partial class SubtitleConverter : IConverter
 
         await File.WriteAllTextAsync(request.OutputPath, output, Utf8NoBom, cancellationToken).ConfigureAwait(false);
         progress.Report(1);
+        return ConversionOutput.Single;
     }
 
     public static IReadOnlyList<SubtitleCue> ParseSrt(string text) => ParseBlocks(text, isVtt: false);

@@ -58,6 +58,17 @@ public sealed class JobRunner
         [EngineKind.Media] = 2,
         [EngineKind.Archive] = 2,
         [EngineKind.Subtitle] = 4,
+        [EngineKind.Pandoc] = 2,
+
+        // Office apps are heavy and partly single-instance (PowerPoint): one conversion at a time per app.
+        [EngineKind.OfficeText] = 1,
+        [EngineKind.OfficeSheet] = 1,
+        [EngineKind.OfficeSlides] = 1,
+        [EngineKind.PdfImage] = 2,
+        [EngineKind.PdfText] = 2,
+        [EngineKind.PdfDocument] = 2,
+        [EngineKind.Sheet] = 2,
+        [EngineKind.WebPdf] = 1,
     };
 
     /// <summary>Starts converting <paramref name="sources"/> to <paramref name="target"/>.</summary>
@@ -120,31 +131,30 @@ public sealed class JobRunner
 
         var folder = outputFolder ?? Path.GetDirectoryName(Path.GetFullPath(job.SourcePath)) ?? ".";
         var baseName = _catalog.BaseName(job.SourcePath);
-        var planned = namer.Reserve(folder, baseName, job.Target.PrimaryExtension);
+        var extension = job.Target.PrimaryExtension;
+        var planned = namer.Reserve(folder, baseName, extension);
         var temp = OutputNamer.TemporaryPathFor(planned);
+        var work = OutputNamer.TemporaryFolderIn(folder);
         var slot = _slots[rule.Engine];
 
         try
         {
             await slot.WaitAsync(job.Token).ConfigureAwait(false);
+            ConversionOutput output;
             try
             {
                 job.SetRunning();
-                var request = new ConversionRequest(job.SourcePath, temp, rule, quality);
-                await converter.ConvertAsync(request, new JobProgress(job), job.Token).ConfigureAwait(false);
+                Directory.CreateDirectory(work);
+                var request = new ConversionRequest(job.SourcePath, temp, rule, quality, work);
+                output = await converter.ConvertAsync(request, new JobProgress(job), job.Token).ConfigureAwait(false);
             }
             finally
             {
                 slot.Release();
             }
 
-            if (!File.Exists(temp))
-            {
-                throw new ConversionException("The engine finished but wrote no file.");
-            }
-
-            var final = Commit(temp, planned, folder, baseName, job.Target.PrimaryExtension, namer);
-            job.Finish(JobStatus.Succeeded, outputPath: final);
+            var (final, count) = CommitOutput(output, temp, planned, folder, baseName, extension, namer);
+            job.Finish(JobStatus.Succeeded, outputPath: final, outputCount: count);
         }
         catch (OperationCanceledException)
         {
@@ -158,6 +168,74 @@ public sealed class JobRunner
             namer.Release(planned);
             job.Finish(JobStatus.Failed, error: ex.Message);
         }
+        finally
+        {
+            DeleteFolderQuietly(work);
+        }
+    }
+
+    /// <summary>
+    /// Moves what the engine wrote to its final place (spec §7.2): one file next to the original; several
+    /// pages in a new "&lt;name&gt; (pages)" folder; or several named files ("&lt;name&gt; - Sheet1.csv") next to it.
+    /// Returns the output to show the user and how many files there are.
+    /// </summary>
+    private static (string Path, int Count) CommitOutput(
+        ConversionOutput output, string temp, string planned, string folder, string baseName, string extension, OutputNamer namer)
+    {
+        if (output.Parts.Count == 0)
+        {
+            if (!File.Exists(temp))
+            {
+                throw new ConversionException("The engine finished but wrote no file.");
+            }
+
+            return (Commit(temp, planned, folder, baseName, extension, namer), 1);
+        }
+
+        foreach (var part in output.Parts)
+        {
+            if (!File.Exists(part.TempPath))
+            {
+                throw new ConversionException("The engine finished but some of its files are missing.");
+            }
+        }
+
+        if (output.Parts.Count == 1)
+        {
+            return (Commit(output.Parts[0].TempPath, planned, folder, baseName, extension, namer), 1);
+        }
+
+        namer.Release(planned);
+        if (output.GroupInFolder)
+        {
+            var pages = namer.Reserve(folder, $"{baseName} (pages)", extension: null);
+            Directory.CreateDirectory(pages);
+            foreach (var part in output.Parts)
+            {
+                File.Move(part.TempPath, Path.Combine(pages, $"{baseName} - {SafeName(part.Suffix)}.{extension}"));
+            }
+
+            return (pages, output.Parts.Count);
+        }
+
+        string? first = null;
+        foreach (var part in output.Parts)
+        {
+            var name = $"{baseName} - {SafeName(part.Suffix)}";
+            var target = namer.Reserve(folder, name, extension);
+            var final = Commit(part.TempPath, target, folder, name, extension, namer);
+            first ??= final;
+        }
+
+        return (first!, output.Parts.Count);
+    }
+
+    /// <summary>Sheet names and the like can contain characters Windows doesn't allow in file names.</summary>
+    private static string SafeName(string value)
+    {
+        var invalid = Path.GetInvalidFileNameChars();
+        var cleaned = new string(value.Select(c => invalid.Contains(c) ? '_' : c).ToArray()).Trim().TrimEnd('.');
+        return cleaned.Length == 0 ? "part" : cleaned;
     }
 
     /// <summary>Renames the temporary file to its final name, choosing a new name if another file took it meanwhile.</summary>
@@ -178,6 +256,23 @@ public sealed class JobRunner
         }
 
         throw new ConversionException("Couldn't find a free file name for the output.");
+    }
+
+    private static void DeleteFolderQuietly(string path)
+    {
+        try
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
     }
 
     private static void DeleteQuietly(string path)

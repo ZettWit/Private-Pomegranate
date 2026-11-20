@@ -13,7 +13,7 @@ namespace Pomegranate.Engines.Tests;
 /// Generates one small sample file per input format, once per test run. Formats no bundled engine can
 /// write (HEIC, camera RAW, DNG, RAR) come from <c>tests/samples/</c> if present; their tests skip otherwise.
 /// </summary>
-public sealed class Samples : IAsyncLifetime
+public sealed partial class Samples : IAsyncLifetime
 {
     private readonly Dictionary<FileFormat, string> _files = [];
 
@@ -47,6 +47,9 @@ public sealed class Samples : IAsyncLifetime
             await MakeMediaAsync();
         }
 
+        await MakeDocumentsAsync();
+        MakeSheets();
+        await MakeOfficeSamplesAsync();
         AddExternalSamples();
     }
 

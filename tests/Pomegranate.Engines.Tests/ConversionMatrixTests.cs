@@ -39,17 +39,28 @@ public abstract class ConversionMatrixTests(Samples samples)
         Assert.SkipWhen(converter is null, $"The {rule.Engine} engine isn't installed (run tools/fetch-engines.ps1).");
 
         var outFolder = Directory.CreateDirectory(Path.Combine(Samples.Folder, "out", $"{fromId}-to-{toId}")).FullName;
+        var work = Directory.CreateDirectory(Path.Combine(outFolder, "work")).FullName;
         var output = Path.Combine(outFolder, $".pomegranate-test.{to.PrimaryExtension}");
-        var request = new ConversionRequest(source!, output, rule, new QualitySettings());
+        var request = new ConversionRequest(source!, output, rule, new QualitySettings(), work);
         var reported = new List<double>();
 
-        await converter!.ConvertAsync(request, new Progress(reported), TestContext.Current.CancellationToken);
+        var result = await converter!.ConvertAsync(request, new Progress(reported), TestContext.Current.CancellationToken);
 
+        if (result.Parts.Count > 0)
+        {
+            Parts = result.Parts.Select(p => p.TempPath).ToArray();
+            Assert.All(Parts, p => Assert.True(File.Exists(p) && new FileInfo(p).Length > 0, $"Missing or empty part {p}"));
+            return Parts[0];
+        }
+
+        Parts = [output];
         Assert.True(File.Exists(output), "No output file was written.");
         Assert.True(new FileInfo(output).Length > 0, "The output file is empty.");
-        Assert.Equal(1, reported.LastOrDefault());
         return output;
     }
+
+    /// <summary>Every file the last conversion produced (several for pages and sheets).</summary>
+    protected IReadOnlyList<string> Parts { get; private set; } = [];
 
     private sealed class Progress(List<double> values) : IProgress<double>
     {

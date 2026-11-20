@@ -23,6 +23,7 @@
   <data name="Notify_HotkeyTakenTitle" xml:space="preserve"><value>Hotkey unavailable</value></data>
   <data name="Notify_NoSelection" xml:space="preserve"><value>Select files in File Explorer or on the desktop first.</value></data>
   <data name="Notify_NoSelectionTitle" xml:space="preserve"><value>Nothing selected</value></data>
+  <data name="Notify_PageCount" xml:space="preserve"><value>{0} pages</value></data>
   <data name="Notify_SomeFailedTitle" xml:space="preserve"><value>{0} of {1} converted</value></data>
   <data name="Progress_CancelAll" xml:space="preserve"><value>Cancel</value></data>
   <data name="Progress_Canceled" xml:space="preserve"><value>Cancelled</value></data>
@@ -43,9 +44,15 @@
   <data name="Settings_CrfHint" xml:space="preserve"><value>Lower is better quality and bigger files.</value></data>
   <data name="Settings_EngineDng" xml:space="preserve"><value>RAW → DNG: dnglab found</value></data>
   <data name="Settings_EngineDngMissing" xml:space="preserve"><value>RAW → DNG: dnglab not found (DNG output hidden)</value></data>
+  <data name="Settings_EngineDocuments" xml:space="preserve"><value>Documents (DOCX, ODT, RTF, Markdown, HTML, EPUB, TXT): Pandoc found</value></data>
+  <data name="Settings_EngineDocumentsMissing" xml:space="preserve"><value>Documents: Pandoc not found (document conversions hidden)</value></data>
+  <data name="Settings_EngineEdge" xml:space="preserve"><value>PDF from Markdown, HTML and TXT: Microsoft Edge found</value></data>
+  <data name="Settings_EngineEdgeMissing" xml:space="preserve"><value>PDF from Markdown, HTML and TXT: Microsoft Edge not found</value></data>
   <data name="Settings_EngineImages" xml:space="preserve"><value>Images, archives, subtitles: built in</value></data>
   <data name="Settings_EngineMedia" xml:space="preserve"><value>Audio and video: FFmpeg found</value></data>
   <data name="Settings_EngineMediaMissing" xml:space="preserve"><value>Audio and video: FFmpeg not found (audio and video conversions hidden)</value></data>
+  <data name="Settings_EngineOffice" xml:space="preserve"><value>Office files to PDF, images, OpenDocument and old formats: {0}</value></data>
+  <data name="Settings_EngineOfficeMissing" xml:space="preserve"><value>No Microsoft Office or LibreOffice found (Office-to-PDF, slides, ODF and old formats hidden)</value></data>
   <data name="Settings_ExcludedApps" xml:space="preserve"><value>Apps where the wheel never opens</value></data>
   <data name="Settings_ExcludedAppsHint" xml:space="preserve"><value>One program name per line, e.g. game.exe</value></data>
   <data name="Settings_General" xml:space="preserve"><value>General</value></data>
@@ -67,12 +74,14 @@
   <data name="Settings_OutputFolder" xml:space="preserve"><value>In this folder</value></data>
   <data name="Settings_OutputNextTo" xml:space="preserve"><value>Next to the original</value></data>
   <data name="Settings_PauseFullScreen" xml:space="preserve"><value>Pause while a full-screen app or game is open</value></data>
+  <data name="Settings_PdfDpi" xml:space="preserve"><value>PDF pages as images</value></data>
   <data name="Settings_PinnedFolders" xml:space="preserve"><value>Folders for Copy to… and Move to…</value></data>
   <data name="Settings_PinnedFoldersHint" xml:space="preserve"><value>Pinned folders come first, then the ones you used recently.</value></data>
   <data name="Settings_Quality" xml:space="preserve"><value>Quality</value></data>
   <data name="Settings_RemoveFolder" xml:space="preserve"><value>Remove</value></data>
   <data name="Settings_ResetQuality" xml:space="preserve"><value>Reset to defaults</value></data>
   <data name="Settings_ShowWelcome" xml:space="preserve"><value>Show welcome</value></data>
+  <data name="Settings_SlideWidth" xml:space="preserve"><value>Slides as images (width)</value></data>
   <data name="Settings_StartWithWindows" xml:space="preserve"><value>Start when Windows starts</value></data>
   <data name="Settings_Title" xml:space="preserve"><value>Pomegranate Settings</value></data>
   <data name="Settings_ToolsKey" xml:space="preserve"><value>Tools wheel</value></data>

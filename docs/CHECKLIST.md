@@ -67,6 +67,20 @@ The tray icon appears and, the first time, the welcome window opens. Quit from t
 - [ ] Add `explorer.exe` to the excluded apps: no wheel when dragging from Explorer. Remove it again.
 - [ ] Switch Windows between **light and dark** mode, change the **accent color**, turn on **high contrast**, turn **Animation effects** off: the wheel follows each.
 
+## v2: documents, slides and spreadsheets
+
+- [ ] A **PDF** → PNG: a `(pages)` folder with one image per page; the notification says "N pages" and clicking it opens the folder.
+- [ ] A one-page PDF → JPG: a single `name.jpg`, no folder.
+- [ ] A **PDF** → DOCX opens in Word with the text and pictures (layout simplified).
+- [ ] A **DOCX** → PDF looks like it does in Word (headers, fonts, page breaks).
+- [ ] A **DOCX** → Markdown, and the Markdown → DOCX again.
+- [ ] A **PPTX** → PNG: one image per slide, 1920 px wide.
+- [ ] An **XLSX with several sheets** → CSV: one `name - Sheet.csv` per sheet; Excel opens them with the right columns.
+- [ ] A **CSV** → XLSX keeps numbers as numbers and postcodes like `01234` as text.
+- [ ] A password-protected DOCX or PDF: the notification says it's password-protected; nothing hangs.
+- [ ] While a Word/Excel conversion runs, open Word or Excel yourself: your window works normally, and after the conversion no hidden Office copy is left in Task Manager.
+- [ ] With PowerPoint already open, convert a PPTX → PDF: your PowerPoint stays open.
+
 ## Installed MSIX (right-click menu and start with Windows)
 
 The right-click entry and start-with-Windows only exist in the installed package. Installing a package you built yourself needs one of these, and both change Windows settings, so they're yours to do:

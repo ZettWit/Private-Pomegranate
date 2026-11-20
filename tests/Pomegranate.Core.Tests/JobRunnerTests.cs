@@ -154,6 +154,53 @@ public sealed class JobRunnerTests : IDisposable
         Assert.Equal(Path.Combine(outFolder, "photo.webp"), batch.Jobs[0].OutputPath);
     }
 
+    [Fact]
+    public async Task Several_pages_go_into_a_pages_folder()
+    {
+        var source = MakeFile("report.pdf");
+        var batch = await RunAsync(Runner(new FakeConverter(EngineKind.PdfImage) { Pages = 3 }), Png, source);
+
+        var job = batch.Jobs[0];
+        Assert.Equal(JobStatus.Succeeded, job.Status);
+        Assert.Equal(Path.Combine(_folder, "report (pages)"), job.OutputPath);
+        Assert.Equal(3, job.OutputCount);
+        Assert.Equal(
+            ["report - 01.png", "report - 02.png", "report - 03.png"],
+            Directory.GetFiles(job.OutputPath!).Select(Path.GetFileName).Order());
+        Assert.Empty(Directory.GetDirectories(_folder, ".pomegranate-*"));
+    }
+
+    [Fact]
+    public async Task One_page_is_just_a_file()
+    {
+        var source = MakeFile("report.pdf");
+        var batch = await RunAsync(Runner(new FakeConverter(EngineKind.PdfImage) { Pages = 1 }), Png, source);
+
+        Assert.Equal(Path.Combine(_folder, "report.png"), batch.Jobs[0].OutputPath);
+    }
+
+    [Fact]
+    public async Task Named_parts_go_next_to_the_original_with_safe_names()
+    {
+        var source = MakeFile("budget.xlsx");
+        var converter = new FakeConverter(EngineKind.Sheet) { Sheets = ["Sheet1", "Q1/Q2"] };
+
+        var batch = await RunAsync(Runner(converter), Csv, source);
+
+        Assert.Equal(2, batch.Jobs[0].OutputCount);
+        Assert.True(File.Exists(Path.Combine(_folder, "budget - Sheet1.csv")));
+        Assert.True(File.Exists(Path.Combine(_folder, "budget - Q1_Q2.csv")));
+    }
+
+    [Fact]
+    public void Page_numbers_get_more_digits_past_99()
+    {
+        var output = ConversionOutput.Pages(Enumerable.Range(0, 120).Select(i => $"p{i}").ToArray());
+
+        Assert.Equal("001", output.Parts[0].Suffix);
+        Assert.Equal("120", output.Parts[^1].Suffix);
+    }
+
     private sealed class FakeConverter(EngineKind engine = EngineKind.Image) : IConverter
     {
         private int _running;
@@ -171,10 +218,42 @@ public sealed class JobRunnerTests : IDisposable
 
         public int MaxConcurrent => _maxConcurrent;
 
+        /// <summary>When set, writes this many page files into the work folder instead of one output.</summary>
+        public int Pages { get; init; }
+
+        /// <summary>When set, writes one named file per sheet next to the original.</summary>
+        public string[] Sheets { get; init; } = [];
+
         public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        public async Task ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
+        public async Task<ConversionOutput> ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
         {
+            if (Pages > 0)
+            {
+                var files = new List<string>();
+                for (var i = 0; i < Pages; i++)
+                {
+                    var page = Path.Combine(request.WorkFolder, $"page{i}.png");
+                    await File.WriteAllTextAsync(page, $"page {i}", cancellationToken);
+                    files.Add(page);
+                }
+
+                return ConversionOutput.Pages(files);
+            }
+
+            if (Sheets.Length > 0)
+            {
+                var parts = new List<OutputPart>();
+                foreach (var sheet in Sheets)
+                {
+                    var file = Path.Combine(request.WorkFolder, Guid.NewGuid() + ".csv");
+                    await File.WriteAllTextAsync(file, sheet, cancellationToken);
+                    parts.Add(new OutputPart(file, sheet));
+                }
+
+                return ConversionOutput.Named(parts);
+            }
+
             var now = Interlocked.Increment(ref _running);
             InterlockedMax(ref _maxConcurrent, now);
             try
@@ -207,6 +286,8 @@ public sealed class JobRunnerTests : IDisposable
                 {
                     File.Delete(request.OutputPath);
                 }
+
+                return ConversionOutput.Single;
             }
             finally
             {

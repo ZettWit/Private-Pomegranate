@@ -57,11 +57,19 @@ internal sealed class ConversionCoordinator(
             return; // cancelled, or everything was already in the target format
         }
 
-        var text = converted.Length == 1
-            ? Path.GetFileName(converted[0].OutputPath)!
-            : L.Format("Notify_FileCount", converted.Length);
-        var firstOutput = converted[0].OutputPath!;
-        tray.Notify(L.Format("Notify_ConvertedTitle", batch.Target.Label), text, onClick: () => ShowInExplorer(firstOutput));
+        var done = converted[0];
+        var firstOutput = done.OutputPath!;
+        var text = converted.Length > 1
+            ? L.Format("Notify_FileCount", converted.Sum(j => j.OutputCount))
+            : done.OutputCount > 1 && Directory.Exists(firstOutput)
+                ? L.Format("Notify_PageCount", done.OutputCount)
+                : done.OutputCount > 1
+                    ? L.Format("Notify_FileCount", done.OutputCount)
+                    : Path.GetFileName(firstOutput);
+
+        // A pages folder opens; a file is shown selected in its folder.
+        Action open = Directory.Exists(firstOutput) ? () => OpenFolder(firstOutput) : () => ShowInExplorer(firstOutput);
+        tray.Notify(L.Format("Notify_ConvertedTitle", batch.Target.Label), text, onClick: open);
     }
 
     public static void ShowInExplorer(string path)
@@ -69,6 +77,18 @@ internal sealed class ConversionCoordinator(
         try
         {
             Process.Start(new ProcessStartInfo("explorer.exe") { ArgumentList = { "/select,", path }, UseShellExecute = false });
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            Log.Error("Couldn't open Explorer.", ex);
+        }
+    }
+
+    public static void OpenFolder(string folder)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe") { ArgumentList = { folder }, UseShellExecute = false });
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {

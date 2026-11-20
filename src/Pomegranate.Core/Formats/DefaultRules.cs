@@ -94,5 +94,108 @@ internal static class DefaultRules
         yield return new(Srt, Txt, EngineKind.Subtitle);
         yield return new(Vtt, Srt, EngineKind.Subtitle);
         yield return new(Vtt, Txt, EngineKind.Subtitle);
+
+        foreach (var rule in Documents().Concat(Pdfs()).Concat(Slides()).Concat(Spreadsheets()))
+        {
+            yield return rule;
+        }
+    }
+
+    // ---- v2 (spec §7.2). Where a pair lists two engines, the first is preferred and the second is the
+    // fallback when the first isn't installed.
+
+    // Word-type documents keep their layout through Office; Pandoc converts their content.
+    private static readonly FileFormat[] WordTypes = [Docx, Odt, Rtf];
+    private static readonly FileFormat[] TextTypes = [Markdown, Html, Epub, Txt];
+
+    private static IEnumerable<ConversionRule> Documents()
+    {
+        FileFormat[] order = [Docx, Pdf, Odt, Rtf, Markdown, Html, Epub, Txt];
+
+        foreach (var from in WordTypes)
+        {
+            foreach (var to in order.Where(t => t != from))
+            {
+                if (to == Pdf)
+                {
+                    yield return new(from, to, EngineKind.OfficeText);
+                }
+                else if (WordTypes.Contains(to))
+                {
+                    yield return new(from, to, EngineKind.OfficeText);
+                    yield return new(from, to, EngineKind.Pandoc);
+                }
+                else
+                {
+                    yield return new(from, to, EngineKind.Pandoc);
+                }
+            }
+        }
+
+        foreach (var from in TextTypes)
+        {
+            foreach (var to in order.Where(t => t != from))
+            {
+                yield return new(from, to, to == Pdf ? EngineKind.WebPdf : EngineKind.Pandoc);
+            }
+        }
+
+        // DOC (Word 97–2003) is input only and needs Word or LibreOffice to read it.
+        foreach (var to in new[] { Docx, Pdf, Odt, Rtf, Html, Txt })
+        {
+            yield return new(Doc, to, EngineKind.OfficeText);
+        }
+    }
+
+    private static IEnumerable<ConversionRule> Pdfs()
+    {
+        yield return new(Pdf, Docx, EngineKind.PdfDocument);
+        yield return new(Pdf, Jpg, EngineKind.PdfImage);
+        yield return new(Pdf, Png, EngineKind.PdfImage);
+        yield return new(Pdf, Txt, EngineKind.PdfText);
+        yield return new(Pdf, Markdown, EngineKind.PdfText);
+        yield return new(Pdf, Epub, EngineKind.PdfDocument);
+        yield return new(Pdf, Pptx, EngineKind.PdfDocument);
+        yield return new(Pdf, Xlsx, EngineKind.PdfText);
+    }
+
+    private static IEnumerable<ConversionRule> Slides()
+    {
+        foreach (var from in new[] { Pptx, Ppt, Odp })
+        {
+            yield return new(from, Pdf, EngineKind.OfficeSlides);
+            yield return new(from, Jpg, EngineKind.OfficeSlides);
+            yield return new(from, Png, EngineKind.OfficeSlides);
+            foreach (var to in new[] { Pptx, Odp }.Where(t => t != from))
+            {
+                yield return new(from, to, EngineKind.OfficeSlides);
+            }
+        }
+    }
+
+    private static IEnumerable<ConversionRule> Spreadsheets()
+    {
+        FileFormat[] order = [Xlsx, Csv, Pdf, Ods, Tsv];
+        foreach (var from in new[] { Xlsx, Xls, Ods, Csv, Tsv })
+        {
+            foreach (var to in order.Where(t => t != from))
+            {
+                if (to == Pdf || to == Ods || from == Ods)
+                {
+                    // Layout (PDF) and OpenDocument need an office suite.
+                    yield return new(from, to, EngineKind.OfficeSheet);
+                }
+                else if (from == Xls && to == Xlsx)
+                {
+                    // Excel keeps formatting and formulas; the built-in reader keeps values only.
+                    yield return new(from, to, EngineKind.OfficeSheet);
+                    yield return new(from, to, EngineKind.Sheet);
+                }
+                else
+                {
+                    yield return new(from, to, EngineKind.Sheet);
+                }
+            }
+        }
     }
 }

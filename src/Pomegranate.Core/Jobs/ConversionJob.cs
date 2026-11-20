@@ -40,8 +40,14 @@ public sealed class ConversionJob
     /// <summary>0 to 1.</summary>
     public double Progress { get; private set; }
 
-    /// <summary>The final output file, once the job has succeeded.</summary>
+    /// <summary>
+    /// The final output once the job has succeeded: the file, or for several pages the folder holding them,
+    /// or for several named files (sheets) the first of them.
+    /// </summary>
     public string? OutputPath { get; private set; }
+
+    /// <summary>How many files the job produced (pages, sheets); 1 for an ordinary conversion.</summary>
+    public int OutputCount { get; private set; }
 
     public string? Error { get; private set; }
 
@@ -63,10 +69,11 @@ public sealed class ConversionJob
 
     internal void SetProgress(double value) => Update(() => Progress = Math.Clamp(value, 0, 1));
 
-    internal void Finish(JobStatus status, string? outputPath = null, string? error = null) => Update(() =>
+    internal void Finish(JobStatus status, string? outputPath = null, string? error = null, int outputCount = 0) => Update(() =>
     {
         Status = status;
         OutputPath = outputPath;
+        OutputCount = outputPath is null ? 0 : Math.Max(1, outputCount);
         Error = error;
         if (status == JobStatus.Succeeded)
         {

@@ -9,7 +9,7 @@ public sealed class MediaConverter(string ffmpegPath, string ffprobePath) : ICon
 {
     public EngineKind Engine => EngineKind.Media;
 
-    public async Task ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
+    public async Task<ConversionOutput> ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
     {
         var info = await ProbeAsync(request.SourcePath, cancellationToken).ConfigureAwait(false);
         var arguments = FfmpegArguments.Build(request.SourcePath, request.OutputPath, request.Rule.To, info, request.Quality);
@@ -26,6 +26,7 @@ public sealed class MediaConverter(string ffmpegPath, string ffprobePath) : ICon
         }
 
         progress.Report(1);
+        return ConversionOutput.Single;
     }
 
     public async Task<MediaInfo> ProbeAsync(string path, CancellationToken cancellationToken)

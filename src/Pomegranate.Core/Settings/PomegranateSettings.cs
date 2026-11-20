@@ -82,6 +82,12 @@ public sealed record QualitySettings
     public int WmaKbps { get; init; } = 192;
     public int GifFps { get; init; } = 15;
     public int GifMaxWidth { get; init; } = 640;
+
+    /// <summary>Resolution of PDF pages turned into images (spec §7.2).</summary>
+    public int PdfImageDpi { get; init; } = 300;
+
+    /// <summary>Width in pixels of slides turned into images.</summary>
+    public int SlideImageWidth { get; init; } = 1920;
 }
 
 /// <summary>Everything the Settings window controls (spec §11).</summary>

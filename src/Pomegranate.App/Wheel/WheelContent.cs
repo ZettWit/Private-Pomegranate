@@ -43,24 +43,26 @@ internal sealed record FolderItem(WheelAction Action, string Path)
 /// <summary>What one wheel shows.</summary>
 internal sealed record WheelContent(WheelKind Kind, string Title, IReadOnlyList<WheelItem> Items, string? Message);
 
-/// <summary>Segoe Fluent Icons code points.</summary>
+/// <summary>Segoe Fluent Icons code points (written as escapes so they're readable in the source).</summary>
 internal static class Glyphs
 {
-    public const string Photo = "";
-    public const string Video = "";
-    public const string Audio = "";
-    public const string Archive = "";
-    public const string Document = "";
-    public const string Captions = "";
-    public const string Share = "";
-    public const string Pin = "";
-    public const string Copy = "";
-    public const string Move = "";
-    public const string Link = "";
-    public const string Terminal = "";
-    public const string Folder = "";
-    public const string More = "";
-    public const string Cancel = "";
+    public const string Photo = "\uE91B";
+    public const string Video = "\uE714";
+    public const string Audio = "\uE8D6";
+    public const string Archive = "\uE7B8";
+    public const string Document = "\uE8A5";
+    public const string Captions = "\uE7F0";
+    public const string Slides = "\uE786";
+    public const string Sheet = "\uE80A";
+    public const string Share = "\uE72D";
+    public const string Pin = "\uE718";
+    public const string Copy = "\uE8C8";
+    public const string Move = "\uE8DE";
+    public const string Link = "\uE71B";
+    public const string Terminal = "\uE756";
+    public const string Folder = "\uE8B7";
+    public const string More = "\uE712";
+    public const string Cancel = "\uE711";
 
     public static string For(FileFormat format) => format.Category switch
     {
@@ -71,6 +73,8 @@ internal static class Glyphs
         FormatCategory.Audio => Audio,
         FormatCategory.Archive => Archive,
         FormatCategory.Subtitle => Captions,
+        FormatCategory.Presentation => Slides,
+        FormatCategory.Spreadsheet => Sheet,
         _ => Document,
     };
 }

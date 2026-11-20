@@ -1,6 +1,6 @@
 namespace Pomegranate.Core.Formats;
 
-/// <summary>Every format Pomegranate knows about in v1.</summary>
+/// <summary>Every format Pomegranate knows about.</summary>
 public static class KnownFormats
 {
     // Images
@@ -49,9 +49,28 @@ public static class KnownFormats
     public static readonly FileFormat Srt = new("srt", "SRT", FormatCategory.Subtitle, "srt");
     public static readonly FileFormat Vtt = new("vtt", "VTT", FormatCategory.Subtitle, "vtt");
 
-    // Documents (v1 only writes these)
+    // Documents
     public static readonly FileFormat Pdf = new("pdf", "PDF", FormatCategory.Document, "pdf");
     public static readonly FileFormat Txt = new("txt", "TXT", FormatCategory.Document, "txt");
+    public static readonly FileFormat Docx = new("docx", "DOCX", FormatCategory.Document, "docx");
+    public static readonly FileFormat Doc = new("doc", "DOC", FormatCategory.Document, "doc");
+    public static readonly FileFormat Odt = new("odt", "ODT", FormatCategory.Document, "odt");
+    public static readonly FileFormat Rtf = new("rtf", "RTF", FormatCategory.Document, "rtf");
+    public static readonly FileFormat Markdown = new("md", "Markdown", FormatCategory.Document, "md", "markdown");
+    public static readonly FileFormat Html = new("html", "HTML", FormatCategory.Document, "html", "htm");
+    public static readonly FileFormat Epub = new("epub", "EPUB", FormatCategory.Document, "epub");
+
+    // Slides
+    public static readonly FileFormat Pptx = new("pptx", "PPTX", FormatCategory.Presentation, "pptx");
+    public static readonly FileFormat Ppt = new("ppt", "PPT", FormatCategory.Presentation, "ppt");
+    public static readonly FileFormat Odp = new("odp", "ODP", FormatCategory.Presentation, "odp");
+
+    // Spreadsheets
+    public static readonly FileFormat Xlsx = new("xlsx", "XLSX", FormatCategory.Spreadsheet, "xlsx");
+    public static readonly FileFormat Xls = new("xls", "XLS", FormatCategory.Spreadsheet, "xls");
+    public static readonly FileFormat Ods = new("ods", "ODS", FormatCategory.Spreadsheet, "ods");
+    public static readonly FileFormat Csv = new("csv", "CSV", FormatCategory.Spreadsheet, "csv");
+    public static readonly FileFormat Tsv = new("tsv", "TSV", FormatCategory.Spreadsheet, "tsv", "tab");
 
     public static IReadOnlyList<FileFormat> All { get; } =
     [
@@ -60,6 +79,8 @@ public static class KnownFormats
         Mp4, Mov, Mkv, WebM, Avi, Wmv, Gif,
         Zip, Tar, TarGz, Rar,
         Srt, Vtt,
-        Pdf, Txt,
+        Pdf, Txt, Docx, Doc, Odt, Rtf, Markdown, Html, Epub,
+        Pptx, Ppt, Odp,
+        Xlsx, Xls, Ods, Csv, Tsv,
     ];
 }

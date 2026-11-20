@@ -8,7 +8,7 @@ public sealed class DngConverter(string dnglabPath) : IConverter
 {
     public EngineKind Engine => EngineKind.Dng;
 
-    public async Task ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
+    public async Task<ConversionOutput> ConvertAsync(ConversionRequest request, IProgress<double> progress, CancellationToken cancellationToken)
     {
         progress.Report(0.1);
         string[] arguments = ["convert", "--loglevel", "error", request.SourcePath, request.OutputPath];
@@ -20,5 +20,6 @@ public sealed class DngConverter(string dnglabPath) : IConverter
         }
 
         progress.Report(1);
+        return ConversionOutput.Single;
     }
 }

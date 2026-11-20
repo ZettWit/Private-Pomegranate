@@ -20,11 +20,22 @@ internal sealed class SettingsViewModel : INotifyPropertyChanged
         PinnedFolders.CollectionChanged += (_, _) => Set(s => s with { PinnedFolders = PinnedFolders.ToArray() });
 
         var available = engines.Available.ToHashSet();
+        var office = engines.Locator.Office;
+        var microsoft = new[] { (office.Word, "Word"), (office.Excel, "Excel"), (office.PowerPoint, "PowerPoint") }
+            .Where(a => a.Item1).Select(a => a.Item2).ToList();
+        if (office.LibreOffice is not null)
+        {
+            microsoft.Add("LibreOffice");
+        }
+
         EngineStatus = string.Join(Environment.NewLine,
         [
             L.Get("Settings_EngineImages"),
             available.Contains(Core.Formats.EngineKind.Media) ? L.Get("Settings_EngineMedia") : L.Get("Settings_EngineMediaMissing"),
             available.Contains(Core.Formats.EngineKind.Dng) ? L.Get("Settings_EngineDng") : L.Get("Settings_EngineDngMissing"),
+            available.Contains(Core.Formats.EngineKind.Pandoc) ? L.Get("Settings_EngineDocuments") : L.Get("Settings_EngineDocumentsMissing"),
+            available.Contains(Core.Formats.EngineKind.WebPdf) ? L.Get("Settings_EngineEdge") : L.Get("Settings_EngineEdgeMissing"),
+            microsoft.Count > 0 ? L.Format("Settings_EngineOffice", string.Join(", ", microsoft)) : L.Get("Settings_EngineOfficeMissing"),
         ]);
         _service.Changed += (_, _) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
     }
@@ -138,6 +149,10 @@ internal sealed class SettingsViewModel : INotifyPropertyChanged
     public int GifFps { get => S.Quality.GifFps; set => Q(q => q with { GifFps = value }); }
 
     public int GifMaxWidth { get => S.Quality.GifMaxWidth; set => Q(q => q with { GifMaxWidth = value }); }
+
+    public int PdfImageDpi { get => S.Quality.PdfImageDpi; set => Q(q => q with { PdfImageDpi = value }); }
+
+    public int SlideImageWidth { get => S.Quality.SlideImageWidth; set => Q(q => q with { SlideImageWidth = value }); }
 
     public void ResetQuality() => Set(s => s with { Quality = new QualitySettings() });
 

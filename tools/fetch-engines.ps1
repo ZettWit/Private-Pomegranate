@@ -8,6 +8,7 @@
           (FFmpeg full GPL build from BtbN, shared-library variant: ffmpeg and ffprobe share
            the DLLs, which roughly halves the size compared with two static executables)
       dnglab/dnglab.exe                                         (dnglab, LGPL-2.1; x64 only for now)
+      pandoc/pandoc.exe, pandoc/COPYRIGHT.txt                    (Pandoc 3.14, GPL-2.0-or-later; x64 build on both CPUs)
 
     Every download is checked against a pinned SHA-256. Re-running skips engines that are already present.
 
@@ -46,6 +47,12 @@ $engines = @{
             Url     = 'https://github.com/dnglab/dnglab/releases/download/v0.8.0/dnglab-win-x64_v0.8.0.zip'
             Sha256  = 'd3add6b71568bf5f7938468b0b40a0ee1eaec01e0057fe78dcc453188010be9a'
             Files   = @('dnglab.exe')
+        },
+        @{
+            Name    = 'pandoc'
+            Url     = 'https://github.com/jgm/pandoc/releases/download/3.14/pandoc-3.14-windows-x86_64.zip'
+            Sha256  = '0144b96e8c7b023fd382ec5ef5bdc475e873f1019d6fa72502492df2c9a94a3b'
+            Files   = @('pandoc.exe', 'COPYRIGHT.txt')
         }
     )
     arm64 = @(
@@ -54,6 +61,13 @@ $engines = @{
             Url     = 'https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-11-18-12-39/ffmpeg-n9.0.2-57-gd838f9f9ae-winarm64-gpl-shared-9.0.zip'
             Sha256  = '1ff219ef3b228f60f268216e60ba958973fbfb2a9ecaf14b7a01763d517951a8'
             Files   = @('bin/ffmpeg.exe', 'bin/ffprobe.exe', 'bin/*.dll', 'LICENSE.txt')
+        },
+        # Pandoc publishes no Windows ARM64 build; ARM64 Windows 11 runs the x64 one through emulation.
+        @{
+            Name    = 'pandoc'
+            Url     = 'https://github.com/jgm/pandoc/releases/download/3.14/pandoc-3.14-windows-x86_64.zip'
+            Sha256  = '0144b96e8c7b023fd382ec5ef5bdc475e873f1019d6fa72502492df2c9a94a3b'
+            Files   = @('pandoc.exe', 'COPYRIGHT.txt')
         }
         # dnglab has no Windows ARM64 release yet; it would need building from source (spec §13).
     )

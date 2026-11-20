@@ -9,6 +9,8 @@ public enum FormatCategory
     Archive,
     Subtitle,
     Document,
+    Presentation,
+    Spreadsheet,
 }
 
 /// <summary>Which engine performs a conversion.</summary>
@@ -28,6 +30,33 @@ public enum EngineKind
 
     /// <summary>Pomegranate's own subtitle converter.</summary>
     Subtitle,
+
+    /// <summary>Pandoc: text documents (DOCX, ODT, RTF, Markdown, HTML, EPUB, TXT).</summary>
+    Pandoc,
+
+    /// <summary>Word, or LibreOffice Writer: layout-faithful PDFs, ODT/RTF/DOCX, legacy DOC.</summary>
+    OfficeText,
+
+    /// <summary>Excel, or LibreOffice Calc: spreadsheet PDFs, ODS, legacy XLS.</summary>
+    OfficeSheet,
+
+    /// <summary>PowerPoint, or LibreOffice Impress: slides to PDF and images, ODP, legacy PPT.</summary>
+    OfficeSlides,
+
+    /// <summary>Windows' built-in PDF renderer: PDF pages to images.</summary>
+    PdfImage,
+
+    /// <summary>PdfPig: text out of PDFs (TXT, Markdown, XLSX).</summary>
+    PdfText,
+
+    /// <summary>PdfPig or the PDF renderer, then Pandoc: PDF to DOCX, EPUB, PPTX.</summary>
+    PdfDocument,
+
+    /// <summary>Built-in spreadsheet data conversions (CSV, TSV, XLSX, XLS).</summary>
+    Sheet,
+
+    /// <summary>Microsoft Edge, headless and offline: simple text formats to PDF.</summary>
+    WebPdf,
 }
 
 /// <summary>

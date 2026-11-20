@@ -67,16 +67,26 @@ public class DropAnalyzerTests
     [Fact]
     public void Unknown_file_is_unsupported()
     {
-        Assert.Equal(ConvertAvailability.UnsupportedType, Analyze(@"C:\a\notes.docx").Availability);
-        Assert.Equal(ConvertAvailability.UnsupportedType, Analyze(@"C:\a\paper.pdf").Availability);
+        Assert.Equal(ConvertAvailability.UnsupportedType, Analyze(@"C:\a\notes.pages").Availability);
+        Assert.Equal(ConvertAvailability.UnsupportedType, Analyze(@"C:\a\backup.7z").Availability);
     }
 
     [Fact]
     public void Unknown_file_among_known_ones_means_nothing_shared()
     {
-        var result = Analyze(@"C:\a\photo.png", @"C:\a\notes.docx");
+        var result = Analyze(@"C:\a\photo.png", @"C:\a\notes.pages");
 
         Assert.Equal(ConvertAvailability.NoSharedFormats, result.Availability);
+    }
+
+    [Fact]
+    public void Pdf_and_word_document_share_text_formats()
+    {
+        var result = Analyze(@"C:\a\paper.pdf", @"C:\a\notes.docx");
+
+        Assert.Contains(Txt, result.ConvertTargets);
+        Assert.Contains(Docx, result.ConvertTargets); // the DOCX is skipped, the PDF converts
+        Assert.DoesNotContain(Jpg, result.ConvertTargets);
     }
 
     [Fact]

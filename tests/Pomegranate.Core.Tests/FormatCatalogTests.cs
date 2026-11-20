@@ -25,7 +25,7 @@ public class FormatCatalogTests
     }
 
     [Theory]
-    [InlineData(@"C:\a\notes.docx")]
+    [InlineData(@"C:\a\notes.pages")]
     [InlineData(@"C:\a\README")]
     [InlineData(@"C:\a\.png")]
     [InlineData(@"C:\a\archive.gz")]
@@ -72,7 +72,7 @@ public class FormatCatalogTests
     }
 
     [Fact]
-    public void Svg_rar_and_pdf_are_never_targets()
+    public void Input_only_formats_are_never_targets()
     {
         var allTargets = _catalog.AllRules.Select(r => r.To).Distinct().ToArray();
 
@@ -80,7 +80,9 @@ public class FormatCatalogTests
         Assert.DoesNotContain(Rar, allTargets);
         Assert.DoesNotContain(Raw, allTargets);
         Assert.DoesNotContain(Heic, allTargets);
-        Assert.Empty(_catalog.TargetsFor(Pdf));
+        Assert.DoesNotContain(Doc, allTargets);
+        Assert.DoesNotContain(Ppt, allTargets);
+        Assert.DoesNotContain(Xls, allTargets);
     }
 
     [Fact]
@@ -115,7 +117,36 @@ public class FormatCatalogTests
         Assert.Equal(48, Count(FormatCategory.Video)); // 7 × 6 + MP3 from every video except GIF
         Assert.Equal(9, Count(FormatCategory.Archive));
         Assert.Equal(4, Count(FormatCategory.Subtitle));
-        Assert.Equal(182, _catalog.AllRules.Count());
+
+        // v2: DOCX/ODT/RTF × 7, Markdown/HTML/EPUB/TXT × 7, DOC × 6, PDF × 8.
+        Assert.Equal(21 + 28 + 6 + 8, Count(FormatCategory.Document));
+        Assert.Equal(4 + 5 + 4, Count(FormatCategory.Presentation));
+        Assert.Equal(4 + 5 + 4 + 4 + 4, Count(FormatCategory.Spreadsheet));
+        Assert.Equal(182 + 63 + 13 + 21, _catalog.AllRules.Count());
+    }
+
+    [Fact]
+    public void Office_is_preferred_and_falls_back_where_a_fallback_exists()
+    {
+        Assert.Equal(EngineKind.OfficeText, _catalog.FindRule(Docx, Odt)?.Engine);
+        Assert.Equal(EngineKind.OfficeSheet, _catalog.FindRule(Xls, Xlsx)?.Engine);
+
+        EngineKind[] office = [EngineKind.OfficeText, EngineKind.OfficeSheet, EngineKind.OfficeSlides];
+        var withoutOffice = _catalog.WithEngines(Enum.GetValues<EngineKind>().Except(office));
+
+        Assert.Equal(EngineKind.Pandoc, withoutOffice.FindRule(Docx, Odt)?.Engine);
+        Assert.Equal(EngineKind.Sheet, withoutOffice.FindRule(Xls, Xlsx)?.Engine);
+        Assert.Null(withoutOffice.FindRule(Docx, Pdf));
+        Assert.Null(withoutOffice.FindRule(Pptx, Pdf));
+        Assert.Empty(withoutOffice.TargetsFor(Ods));
+        Assert.Contains(Csv, withoutOffice.TargetsFor(Xlsx));
+        Assert.Equal(EngineKind.WebPdf, withoutOffice.FindRule(Markdown, Pdf)?.Engine);
+    }
+
+    [Fact]
+    public void Pdf_offers_documents_images_and_text()
+    {
+        Assert.Equal([Docx, Jpg, Png, Txt, Markdown, Epub, Pptx, Xlsx], _catalog.TargetsFor(Pdf));
     }
 
     [Theory]

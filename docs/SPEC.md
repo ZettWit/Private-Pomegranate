@@ -20,7 +20,7 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 | License | MIT for Pomegranate's code; bundled engines keep their own licenses (see §9) |
 | Price | Free. No trial, no paywall, no conversion limit |
 | Network | None. No telemetry, crash uploads or update checks; the Store and winget handle updates |
-| Install size | Measured on x64: **175 MB download, 442 MB installed**: engines 196 MB (FFmpeg 182, dnglab 13) and the app with its own .NET runtime ~245 MB (Store MSIX packages can't use a shared .NET install). Every engine is bundled; nothing is downloaded at runtime. Possible later cut: replace the Windows Forms tray icon with direct Win32 calls (~20 MB) |
+| Install size | Measured on x64 with v2: **222.5 MB download, 681 MB installed**: engines 426 MB (FFmpeg 182, Pandoc 230, dnglab 13) and the app with its own .NET runtime ~255 MB (Store MSIX packages can't use a shared .NET install). v1 alone was 175 / 442 MB. Every bundled engine ships in the package; nothing is downloaded at runtime. Possible later cut: replace the Windows Forms tray icon with direct Win32 calls (~20 MB) |
 | Language | English in v1. All strings live in `.resx` files so the app can be translated later |
 
 ## 3. Phases
@@ -28,7 +28,7 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 | Phase | Scope |
 |---|---|
 | **v1** | App shell (tray, settings, first run), drag detection and the wheel, right-click menu, hotkey, keyboard control, conversions for **images, audio, video, archives, subtitles**, all **6 actions** |
-| **v2** | Conversions for **PDF, documents, slides, spreadsheets, EPUB**. Engine choice (LibreOffice vs Pandoc, how to do PDF → Word) decided at the start of v2 |
+| **v2** | Conversions for **PDF, documents, slides, spreadsheets, EPUB** (§7.2). Built on branch `v2/documents` |
 | **v3** | The **file tools**: compress, crop, trim, split, merge, redact, annotate, strip metadata, speed change, extract audio, read QR, reorder PDF pages, and others. Which tools need their own editor window is decided at the start of v3 |
 | Later | Touch and pen activation, translations |
 
@@ -79,7 +79,9 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 | **Copy Path** | Puts the full path(s) on the clipboard, one per line |
 | **Terminal** | Opens the default terminal (Windows Terminal if installed) in the file's folder |
 
-## 7. Conversions in v1
+## 7. Conversions
+
+### 7.1 v1: images, audio, video, archives, subtitles
 
 182 input → output pairs. The format lists match Tangerine's published ones for these types, except that HEIC is input only (see below).
 
@@ -93,16 +95,58 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 
 Notes:
 - **Video → video** copies the streams without re-encoding when the target container supports the existing codecs, which makes the change near-instant. Otherwise it re-encodes with the defaults in §11.
-- **SVG** is input only. **PDF** is image output only in v1. PDF input arrives in v2.
+- **SVG** is input only. PDF input arrived in v2 (§7.2).
 - **HEIC is input only.** The bundled ImageMagick build can read HEIC but has no HEIC encoder, and FFmpeg has no HEIF writer either (engine check, §13).
 - **Correction from the interview:** Magick.NET can read camera RAW but cannot write DNG. RAW → DNG uses the separate `dnglab` command-line tool.
 - **Several files at once:** a target is offered when every file either converts to it or is already in it. Files already in the target format are skipped.
 - **Missing engines:** if an engine isn't installed (e.g. dnglab on ARM64), its conversions are removed from the wheel instead of failing.
 
+### 7.2 v2: documents, slides and spreadsheets
+
+Agreed in the v2 interview (2026-11-19). 97 new pairs, 279 in total.
+
+| Type | Inputs | Outputs |
+|---|---|---|
+| Documents | DOCX, ODT, RTF, Markdown, HTML, EPUB, TXT; DOC (input only) | Each other, plus PDF. DOC → DOCX, PDF, ODT, RTF, HTML, TXT |
+| PDF | PDF | DOCX, JPG, PNG, TXT, Markdown, EPUB, PPTX, XLSX |
+| Slides | PPTX, ODP; PPT (input only) | PDF, JPG, PNG; PPTX ↔ ODP |
+| Spreadsheets | XLSX, ODS, CSV, TSV; XLS (input only) | Each other, plus PDF |
+
+Apple-only formats from Tangerine's list (Pages output, RTFD, text clippings) are left out.
+
+**Engines.** Where two are listed, the first is used when installed and the second is the fallback.
+
+| Conversion | Engine |
+|---|---|
+| DOCX, ODT, RTF between each other | Office (Word or LibreOffice Writer), else Pandoc |
+| DOCX, ODT, RTF → PDF; DOC → anything | Office only |
+| Anything to or from Markdown, HTML, EPUB, TXT | Pandoc |
+| Markdown, HTML, EPUB, TXT → PDF | Pandoc makes one HTML page; the PC's Microsoft Edge prints it, headless and offline |
+| PDF → JPG, PNG | Windows' built-in PDF renderer, one image per page |
+| PDF → TXT, Markdown, XLSX | PdfPig: the text, with a simplified layout. XLSX: one sheet per page, text placed in cells by position |
+| PDF → DOCX, EPUB | PdfPig (text and pictures), then Pandoc |
+| PDF → PPTX | Each page becomes a picture slide (looks exact, not editable) |
+| Slides → PDF, JPG, PNG; PPTX ↔ ODP | Office (PowerPoint or LibreOffice Impress) |
+| CSV, TSV, XLSX, XLS between each other | Built in (ExcelDataReader + MiniExcel), values only. XLS → XLSX prefers Excel, which keeps formatting |
+| Anything with ODS; spreadsheets → PDF | Office (Excel or LibreOffice Calc) |
+
+**Which office app.** Microsoft Office handles its own formats and RTF; LibreOffice handles OpenDocument (ODT, ODS, ODP). Each falls back to the other when only one is installed. Word, Excel and PowerPoint are detected separately, so a PC with Word but no PowerPoint is offered document conversions but no slide conversions. With no office suite at all, those slices are hidden.
+
+**Behaviour.**
+- **Several pages** (PDF → images, slides → images) go into a new folder next to the original, `Report (pages)`, holding `Report - 01.png`, `Report - 02.png`, … A single page is just `Report.png`.
+- **A workbook with several sheets** → CSV/TSV gives one file per sheet next to the original: `Budget - Sheet1.csv`, `Budget - Sheet2.csv`.
+- **Password-protected** PDF, Word, Excel or PowerPoint files fail with "This file is password-protected." There are no password prompts.
+- **PDF → DOCX never uses Word.** Word's PDF conversion shows a prompt that hidden automation can't answer (§13.1).
+- **Office runs hidden** with macros forced off, one conversion per app at a time, and a 3-minute watchdog. Pomegranate only ever closes an Office process it started itself. An already open PowerPoint (single-instance) is used but never closed.
+- **Pandoc runs sandboxed**: it reads only the input file and never goes online. Pictures that a Markdown or HTML file links to by path or URL are therefore not pulled in. Markdown output embeds its pictures as data URIs, so the file stands alone.
+- **Edge prints** with a throwaway profile and every network lookup blocked.
+- **ARM64**: Pandoc publishes no Windows ARM64 build; the x64 one runs under Windows' emulation.
+
 ## 8. Output rules
 
 - Output goes in the same folder as the original by default. Settings can change it to a fixed folder.
 - If the name is taken, the new file becomes `name (1).ext`, `name (2).ext`, and so on.
+- Conversions that produce several files follow §7.2: a `(pages)` folder for pages, `name - Sheet1.csv` files for sheets.
 - The original file is never modified, moved or deleted by a conversion.
 - Dropping several files converts them in parallel. Images use up to one job per CPU core; video uses at most 2 jobs at once.
 - A small progress popup near the tray shows each job and has a Cancel button. When the batch finishes, a Windows notification appears with **Open folder**.
@@ -116,6 +160,13 @@ Notes:
 | Magick.NET 15.1 (ImageMagick 7.1.2, Q16) | Images | Apache-2.0 (ImageMagick license) | NuGet (`Magick.NET-Q16-AnyCPU`) |
 | SharpCompress | Archives | MIT | NuGet |
 | dnglab 0.8.0 | RAW → DNG | LGPL-2.1 | Separate `dnglab.exe`, run as a child process. x64 only for now |
+| Pandoc 3.14 | Text documents | GPL-2.0-or-later | Separate `pandoc.exe` (230 MB), run as a child process. The x64 build on both CPU types |
+| PdfPig 0.1.16 | PDF text and pictures | Apache-2.0 | NuGet |
+| ExcelDataReader 3.9 | Reading XLS, XLSX | MIT | NuGet |
+| MiniExcel 1.47 | Writing XLSX | Apache-2.0 | NuGet |
+| Windows PDF renderer (Windows.Data.Pdf) | PDF pages → images | Part of Windows | Not bundled |
+| Microsoft Edge | Markdown, HTML, EPUB, TXT → PDF | The PC's own | Not bundled |
+| Microsoft Office or LibreOffice | Office layouts, OpenDocument, old formats | The PC's own | Not bundled; used only if installed |
 
 Because FFmpeg runs as a separate program, Pomegranate's own code can stay MIT.
 
@@ -148,6 +199,8 @@ Engine binaries are downloaded at **build** time by `tools/fetch-engines.ps1` fr
 | Video (WMV) | WMV2 + WMA 192 kbps |
 | GIF from video | 15 fps, max width 640 px, generated color palette |
 | Audio bitrate | MP3 VBR ~190 kbps, AAC/M4A 192 kbps, Opus 128 kbps, OGG Vorbis quality 5, WMA 192 kbps. WAV/AIFF 16-bit PCM, FLAC lossless |
+| PDF pages as images (v2) | 300 DPI |
+| Slides as images (v2) | 1920 px wide |
 
 Converting never shows an options dialog; it always uses these defaults.
 
@@ -222,6 +275,19 @@ Still to check:
 3. **Store policy**: confirm the Store accepts a free app that bundles GPL FFmpeg (VLC and others are listed there, so this is likely fine).
 4. **Pinned FFmpeg URL**: BtbN removes old autobuild releases. Before release, mirror the pinned zips to Pomegranate's own GitHub release.
 
+### 13.1 v2 engine check (2026-11-19, x64 with Microsoft 365 installed)
+
+| Question | Result |
+|---|---|
+| Pandoc 3.14 | Converts every v2 format. DOCX → Markdown came back identical to the source |
+| Word, Excel, PowerPoint automation | Hidden: DOCX → PDF 6 s, CSV → PDF 4 s, PPTX → PDF plus slide PNGs 7 s |
+| Word PDF → DOCX | Hangs: Word shows a confirmation prompt that hidden automation can't answer. Not used; PdfPig instead |
+| Excel `Workbooks.Open` | A dummy write-reservation password makes it fail on ordinary workbooks, so only a dummy open password is passed |
+| Office processes | Excel and PowerPoint stayed running after `Quit` because .NET still held COM references. Each conversion now releases them and waits for (or closes) the app it started before reporting back. Verified: no Office process left after the full test run |
+| Windows PDF renderer | A page → 2550×3300 PNG at 300 DPI in 1.4 s |
+| PdfPig | All text recovered, including a table |
+| LibreOffice | Not installed on the test PC, so its path is untested here. CI can install it to cover it |
+
 ## 14. Known limits
 
 - Windows blocks the wheel over apps running as administrator (e.g. an admin Explorer window or Task Manager). This is a Windows security rule (UIPI) that Pomegranate cannot work around.
@@ -262,5 +328,16 @@ Still to check:
 | 22 | English first, ready for translation; Narrator, high contrast, reduced motion |
 | 23 | MIT license; FFmpeg as a separate GPL program |
 | 24 | v2/v3 details decided in a short interview at the start of each phase |
+| 25 | v2 formats: Tangerine's list without Apple-only formats, plus ODT, RTF, HTML, ODP, ODS, and DOC/PPT/XLS as input |
+| 26 | Office files → PDF or images through the PC's Microsoft Office, else LibreOffice; hidden when neither is installed (nothing bundled) |
+| 27 | PDF input: Windows' renderer for images, PdfPig for text; PDF → PPTX as picture slides |
+| 28 | Pandoc for text documents; Edge prints Markdown, HTML, EPUB and TXT to PDF |
+| 29 | Spreadsheet data conversions built in; one CSV per sheet |
+| 30 | v2 before v3 |
+| 31 | PDF → DOCX always through PdfPig, never Word |
+| 32 | Microsoft Office for its own formats and RTF, LibreOffice for OpenDocument, each falling back to the other |
+| 33 | Several pages go into a `(pages)` folder; one page is one file |
+| 34 | 300 DPI for PDF pages and 1920 px for slides, both adjustable in Settings |
+| 35 | Password-protected files fail with a clear message; no prompts |
 
 Defaults I picked that weren't discussed (easy to change): the quality values in §11, the Win+Alt+C hotkey, the concurrency limits in §8, the Float tray holding references rather than copies, and dropping in the wheel's center to cancel.
