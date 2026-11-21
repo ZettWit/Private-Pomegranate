@@ -12,11 +12,49 @@
   <data name="Action_MoveToPick" xml:space="preserve"><value>Move to folder</value></data>
   <data name="Action_Share" xml:space="preserve"><value>Share</value></data>
   <data name="Action_Terminal" xml:space="preserve"><value>Terminal</value></data>
+  <data name="Annotate_Arrow" xml:space="preserve"><value>Arrow</value></data>
+  <data name="Annotate_Highlighter" xml:space="preserve"><value>Highlighter</value></data>
+  <data name="Annotate_Hint" xml:space="preserve"><value>Pick a tool and drag on the picture. For text, click where it goes, type, then press Enter.</value></data>
+  <data name="Annotate_Large" xml:space="preserve"><value>Thick</value></data>
+  <data name="Annotate_Medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Annotate_NothingYet" xml:space="preserve"><value>Draw something first.</value></data>
+  <data name="Annotate_Pen" xml:space="preserve"><value>Pen</value></data>
+  <data name="Annotate_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
+  <data name="Annotate_Small" xml:space="preserve"><value>Thin</value></data>
+  <data name="Annotate_Text" xml:space="preserve"><value>Text</value></data>
+  <data name="Bleep_Hint" xml:space="preserve"><value>Drag on the waveform to mark what to cover. Click a range to select it; Delete removes it. Space plays.</value></data>
+  <data name="Bleep_NothingYet" xml:space="preserve"><value>Mark at least one range first.</value></data>
+  <data name="Bleep_Ranges" xml:space="preserve"><value>Ranges to bleep</value></data>
+  <data name="Bleep_Remove" xml:space="preserve"><value>Remove range</value></data>
+  <data name="Bleep_Silence" xml:space="preserve"><value>Silence</value></data>
+  <data name="Bleep_Summary" xml:space="preserve"><value>{0} range(s), {1} in total</value></data>
+  <data name="Bleep_Tone" xml:space="preserve"><value>Bleep</value></data>
+  <data name="Color_Black" xml:space="preserve"><value>Black</value></data>
+  <data name="Color_Blue" xml:space="preserve"><value>Blue</value></data>
+  <data name="Color_Green" xml:space="preserve"><value>Green</value></data>
+  <data name="Color_Red" xml:space="preserve"><value>Red</value></data>
+  <data name="Color_White" xml:space="preserve"><value>White</value></data>
+  <data name="Color_Yellow" xml:space="preserve"><value>Yellow</value></data>
+  <data name="Crop_Free" xml:space="preserve"><value>Free</value></data>
+  <data name="Crop_Hint" xml:space="preserve"><value>Drag the frame or its handles; arrow keys nudge it. Enter saves.</value></data>
+  <data name="Crop_HintVideo" xml:space="preserve"><value>Drag the frame or its handles. The slider shows other frames; the crop applies to the whole video.</value></data>
+  <data name="Crop_NothingYet" xml:space="preserve"><value>Drag the edges inward to choose what to keep.</value></data>
+  <data name="Crop_Original" xml:space="preserve"><value>Original</value></data>
+  <data name="Crop_Reset" xml:space="preserve"><value>Reset</value></data>
+  <data name="Editor_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Editor_Frame" xml:space="preserve"><value>Frame</value></data>
+  <data name="Editor_LoadFailed" xml:space="preserve"><value>Couldn't open this file: {0}</value></data>
+  <data name="Editor_Loading" xml:space="preserve"><value>Loading…</value></data>
+  <data name="Editor_Redo" xml:space="preserve"><value>Redo</value></data>
+  <data name="Editor_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Editor_Undo" xml:space="preserve"><value>Undo</value></data>
   <data name="Float_Clear" xml:space="preserve"><value>Clear</value></data>
   <data name="Float_Hint" xml:space="preserve"><value>Drag files from here into any app.</value></data>
   <data name="Float_Remove" xml:space="preserve"><value>Remove</value></data>
   <data name="Float_Title" xml:space="preserve"><value>Float</value></data>
   <data name="Notify_ActionFailedTitle" xml:space="preserve"><value>That didn't work</value></data>
+  <data name="Notify_ClipboardBusyTitle" xml:space="preserve"><value>Couldn't copy: another app is using the clipboard</value></data>
+  <data name="Notify_CodeCopiedTitle" xml:space="preserve"><value>QR code copied</value></data>
   <data name="Notify_ConvertedTitle" xml:space="preserve"><value>Converted to {0}</value></data>
   <data name="Notify_FileCount" xml:space="preserve"><value>{0} files</value></data>
   <data name="Notify_HotkeyTaken" xml:space="preserve"><value>{0} is already used by another app. Pick a different hotkey in Settings.</value></data>
@@ -25,6 +63,37 @@
   <data name="Notify_NoSelectionTitle" xml:space="preserve"><value>Nothing selected</value></data>
   <data name="Notify_PageCount" xml:space="preserve"><value>{0} pages</value></data>
   <data name="Notify_SomeFailedTitle" xml:space="preserve"><value>{0} of {1} converted</value></data>
+  <data name="Notify_TextCopiedTitle" xml:space="preserve"><value>Text copied</value></data>
+  <data name="Notify_ToolDoneTitle" xml:space="preserve"><value>{0} done</value></data>
+  <data name="Notify_ToolSomeFailedTitle" xml:space="preserve"><value>{0}: {1} of {2} done</value></data>
+  <data name="Option_Flip" xml:space="preserve"><value>Flip</value></data>
+  <data name="Option_Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Option_Long1280" xml:space="preserve"><value>1280 px</value></data>
+  <data name="Option_Long1920" xml:space="preserve"><value>1920 px</value></data>
+  <data name="Option_Long3840" xml:space="preserve"><value>3840 px</value></data>
+  <data name="Option_Medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Option_Rotate180" xml:space="preserve"><value>180°</value></data>
+  <data name="Option_RotateLeft" xml:space="preserve"><value>Left</value></data>
+  <data name="Option_RotateRight" xml:space="preserve"><value>Right</value></data>
+  <data name="Option_Scale25" xml:space="preserve"><value>25%</value></data>
+  <data name="Option_Scale50" xml:space="preserve"><value>50%</value></data>
+  <data name="Option_Speed05" xml:space="preserve"><value>0.5×</value></data>
+  <data name="Option_Speed15" xml:space="preserve"><value>1.5×</value></data>
+  <data name="Option_Speed2" xml:space="preserve"><value>2×</value></data>
+  <data name="Option_Speed4" xml:space="preserve"><value>4×</value></data>
+  <data name="Option_Strong" xml:space="preserve"><value>Strong</value></data>
+  <data name="Pages_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Pages_DeleteTip" xml:space="preserve"><value>Delete (Del)</value></data>
+  <data name="Pages_Hint" xml:space="preserve"><value>Drag pages to reorder them, or press Ctrl+Left/Right. Ctrl and Shift select several.</value></data>
+  <data name="Pages_ItemName" xml:space="preserve"><value>Page {0}</value></data>
+  <data name="Pages_ItemNameRotated" xml:space="preserve"><value>Page {0}, turned {1}°</value></data>
+  <data name="Pages_KeepOne" xml:space="preserve"><value>Keep at least one page.</value></data>
+  <data name="Pages_NothingYet" xml:space="preserve"><value>Nothing has changed yet.</value></data>
+  <data name="Pages_RotateLeft" xml:space="preserve"><value>Rotate left</value></data>
+  <data name="Pages_RotateLeftTip" xml:space="preserve"><value>Rotate left ( [ )</value></data>
+  <data name="Pages_RotateRight" xml:space="preserve"><value>Rotate right</value></data>
+  <data name="Pages_RotateRightTip" xml:space="preserve"><value>Rotate right ( ] )</value></data>
+  <data name="Pages_SaveSelection" xml:space="preserve"><value>Save selection</value></data>
   <data name="Progress_CancelAll" xml:space="preserve"><value>Cancel</value></data>
   <data name="Progress_Canceled" xml:space="preserve"><value>Cancelled</value></data>
   <data name="Progress_Done" xml:space="preserve"><value>Done</value></data>
@@ -32,6 +101,14 @@
   <data name="Progress_Queued" xml:space="preserve"><value>Waiting</value></data>
   <data name="Progress_Skipped" xml:space="preserve"><value>Skipped</value></data>
   <data name="Progress_Title" xml:space="preserve"><value>Converting</value></data>
+  <data name="Redact_Black" xml:space="preserve"><value>Black box</value></data>
+  <data name="Redact_Blur" xml:space="preserve"><value>Blur</value></data>
+  <data name="Redact_During" xml:space="preserve"><value>Hide between</value></data>
+  <data name="Redact_Hint" xml:space="preserve"><value>Drag over what to hide. Select a box to move it or change its style; Delete removes it. Only black boxes can't be undone.</value></data>
+  <data name="Redact_HintVideo" xml:space="preserve"><value>Drag over what to hide. The boxes stay in place for the time range below; they don't follow moving things.</value></data>
+  <data name="Redact_NothingYet" xml:space="preserve"><value>Draw a box over what to hide first.</value></data>
+  <data name="Redact_Pixelate" xml:space="preserve"><value>Pixelate</value></data>
+  <data name="Redact_Remove" xml:space="preserve"><value>Remove box</value></data>
   <data name="Settings_AacKbps" xml:space="preserve"><value>AAC bitrate (MP4, MOV, MKV, M4A)</value></data>
   <data name="Settings_About" xml:space="preserve"><value>About</value></data>
   <data name="Settings_AboutText" xml:space="preserve"><value>An offline file converter. Everything runs on this PC; nothing is uploaded.</value></data>
@@ -40,6 +117,10 @@
   <data name="Settings_AddFolder" xml:space="preserve"><value>Add folder…</value></data>
   <data name="Settings_AvifQuality" xml:space="preserve"><value>AVIF quality</value></data>
   <data name="Settings_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="Settings_CompressAudioKbps" xml:space="preserve"><value>Audio bitrate (MP3, AAC, WMA, kbps)</value></data>
+  <data name="Settings_CompressImageQuality" xml:space="preserve"><value>Images (JPEG, WebP, AVIF quality)</value></data>
+  <data name="Settings_CompressPdfDpi" xml:space="preserve"><value>PDF pictures (highest DPI)</value></data>
+  <data name="Settings_CompressVideoCrf" xml:space="preserve"><value>Video quality (H.264 CRF; higher is smaller)</value></data>
   <data name="Settings_ConvertKey" xml:space="preserve"><value>Convert wheel</value></data>
   <data name="Settings_CrfHint" xml:space="preserve"><value>Lower is better quality and bigger files.</value></data>
   <data name="Settings_EngineDng" xml:space="preserve"><value>RAW → DNG: dnglab found</value></data>
@@ -65,6 +146,9 @@
   <data name="Settings_Hotkey" xml:space="preserve"><value>Hotkey</value></data>
   <data name="Settings_HotkeyHint" xml:space="preserve"><value>Opens the wheel for the files selected in File Explorer. Click the box and press a new combination.</value></data>
   <data name="Settings_JpegQuality" xml:space="preserve"><value>JPEG quality</value></data>
+  <data name="Settings_LevelLight" xml:space="preserve"><value>Light</value></data>
+  <data name="Settings_LevelMedium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Settings_LevelStrong" xml:space="preserve"><value>Strong</value></data>
   <data name="Settings_Licenses" xml:space="preserve"><value>Licenses</value></data>
   <data name="Settings_Mp3Hint" xml:space="preserve"><value>V0 is best, V9 is smallest. V2 is about 190 kbps.</value></data>
   <data name="Settings_Mp3Quality" xml:space="preserve"><value>MP3 quality</value></data>
@@ -84,17 +168,48 @@
   <data name="Settings_SlideWidth" xml:space="preserve"><value>Slides as images (width)</value></data>
   <data name="Settings_StartWithWindows" xml:space="preserve"><value>Start when Windows starts</value></data>
   <data name="Settings_Title" xml:space="preserve"><value>Pomegranate Settings</value></data>
+  <data name="Settings_Tools" xml:space="preserve"><value>Tools</value></data>
+  <data name="Settings_ToolsHint" xml:space="preserve"><value>What Light, Medium and Strong mean for Compress.</value></data>
   <data name="Settings_ToolsKey" xml:space="preserve"><value>Tools wheel</value></data>
   <data name="Settings_VorbisQuality" xml:space="preserve"><value>OGG Vorbis quality</value></data>
   <data name="Settings_Vp9Crf" xml:space="preserve"><value>WebM quality (VP9 CRF)</value></data>
   <data name="Settings_WebPQuality" xml:space="preserve"><value>WebP quality</value></data>
   <data name="Settings_WmaKbps" xml:space="preserve"><value>WMA bitrate (WMV, WMA)</value></data>
+  <data name="Tool_Annotate" xml:space="preserve"><value>Annotate</value></data>
+  <data name="Tool_Bleep" xml:space="preserve"><value>Bleep</value></data>
+  <data name="Tool_Compress" xml:space="preserve"><value>Compress</value></data>
+  <data name="Tool_CopyText" xml:space="preserve"><value>Copy text</value></data>
+  <data name="Tool_Crop" xml:space="preserve"><value>Crop</value></data>
+  <data name="Tool_Extract" xml:space="preserve"><value>Extract</value></data>
+  <data name="Tool_ExtractAudio" xml:space="preserve"><value>Extract audio</value></data>
+  <data name="Tool_Merge" xml:space="preserve"><value>Merge</value></data>
+  <data name="Tool_Mute" xml:space="preserve"><value>Mute</value></data>
+  <data name="Tool_Normalize" xml:space="preserve"><value>Normalize</value></data>
+  <data name="Tool_Pages" xml:space="preserve"><value>Pages</value></data>
+  <data name="Tool_ReadCode" xml:space="preserve"><value>Read QR code</value></data>
+  <data name="Tool_Redact" xml:space="preserve"><value>Redact</value></data>
+  <data name="Tool_Resize" xml:space="preserve"><value>Resize</value></data>
+  <data name="Tool_Rotate" xml:space="preserve"><value>Rotate</value></data>
+  <data name="Tool_Speed" xml:space="preserve"><value>Speed</value></data>
+  <data name="Tool_Split" xml:space="preserve"><value>Split</value></data>
+  <data name="Tool_StripMetadata" xml:space="preserve"><value>Strip metadata</value></data>
+  <data name="Tool_Trim" xml:space="preserve"><value>Trim</value></data>
+  <data name="Tool_Zip" xml:space="preserve"><value>Zip</value></data>
   <data name="Tray_Help" xml:space="preserve"><value>Help</value></data>
   <data name="Tray_Pause" xml:space="preserve"><value>Pause</value></data>
   <data name="Tray_PausedSuffix" xml:space="preserve"><value>paused</value></data>
   <data name="Tray_Quit" xml:space="preserve"><value>Quit</value></data>
   <data name="Tray_Resume" xml:space="preserve"><value>Resume</value></data>
   <data name="Tray_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Trim_Hint" xml:space="preserve"><value>Drag the handles to the part you want to keep. Space plays it; arrow keys nudge the active handle (Home and End pick which).</value></data>
+  <data name="Trim_HintVideo" xml:space="preserve"><value>Drag the handles to the part you want to keep. The picture shows the frame at the handle.</value></data>
+  <data name="Trim_NoDuration" xml:space="preserve"><value>This file's length couldn't be read.</value></data>
+  <data name="Trim_NothingYet" xml:space="preserve"><value>Move a handle to choose what to keep.</value></data>
+  <data name="Trim_Play" xml:space="preserve"><value>Play</value></data>
+  <data name="Trim_PlayTip" xml:space="preserve"><value>Play the part you keep (Space)</value></data>
+  <data name="Trim_Range" xml:space="preserve"><value>Part to keep</value></data>
+  <data name="Trim_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Trim_Summary" xml:space="preserve"><value>{0} – {1}  ({2})</value></data>
   <data name="Welcome_ActionsLine" xml:space="preserve"><value>Share, float, copy, move, copy the path or open a terminal</value></data>
   <data name="Welcome_ConvertLine" xml:space="preserve"><value>Convert to another format</value></data>
   <data name="Welcome_Done" xml:space="preserve"><value>Get started</value></data>
@@ -107,16 +222,16 @@
   <data name="Welcome_SampleName" xml:space="preserve"><value>Sample image to drag</value></data>
   <data name="Welcome_Subheading" xml:space="preserve"><value>Convert files without leaving where you are.</value></data>
   <data name="Welcome_Title" xml:space="preserve"><value>Welcome to Pomegranate</value></data>
-  <data name="Welcome_ToolsLine" xml:space="preserve"><value>File tools (coming in a later version)</value></data>
+  <data name="Welcome_ToolsLine" xml:space="preserve"><value>Compress, crop, trim, merge and other file tools</value></data>
   <data name="Welcome_TryIt" xml:space="preserve"><value>Try it</value></data>
   <data name="Wheel_Actions" xml:space="preserve"><value>Actions</value></data>
   <data name="Wheel_Convert" xml:space="preserve"><value>Convert</value></data>
   <data name="Wheel_FoldersActionsOnly" xml:space="preserve"><value>Folders can't be converted. Use the Actions wheel.</value></data>
   <data name="Wheel_More" xml:space="preserve"><value>More</value></data>
   <data name="Wheel_NoSharedFormats" xml:space="preserve"><value>These files have no format in common.</value></data>
+  <data name="Wheel_NoTools" xml:space="preserve"><value>No tools for these files.</value></data>
   <data name="Wheel_NothingToConvert" xml:space="preserve"><value>Nothing to convert.</value></data>
   <data name="Wheel_Tools" xml:space="preserve"><value>Tools</value></data>
-  <data name="Wheel_ToolsComingSoon" xml:space="preserve"><value>File tools are coming in a later version.</value></data>
   <data name="Wheel_UnsupportedType" xml:space="preserve"><value>Pomegranate can't convert this type of file.</value></data>
   <data name="Wheel_VirtualFiles" xml:space="preserve"><value>Save the file first, then drag it from its folder.</value></data>
 </root>

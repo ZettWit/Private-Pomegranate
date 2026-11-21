@@ -33,9 +33,17 @@ Used in-process to read XLS and XLSX files. https://github.com/ExcelDataReader/E
 
 Used in-process to write XLSX files. https://github.com/mini-software/MiniExcel
 
+## PDFsharp 6.2.4 (MIT)
+
+Used in-process for the PDF tools (merge, split, pages, compress, metadata). https://github.com/empira/PDFsharp. Pinned to 6.2.4, the last MIT-licensed release; later releases are AGPL-3.0.
+
+## ZXing.Net 0.16.11 (Apache-2.0)
+
+Used in-process to read QR codes and barcodes. https://github.com/micjahn/ZXing.Net
+
 ## Not bundled
 
-Pomegranate also uses, when they are installed on the PC, Microsoft Edge (printing simple documents to PDF), Microsoft Office or LibreOffice (Office layouts, OpenDocument and old formats) and Windows' own PDF renderer. They are the PC's own software under their own licenses; Pomegranate doesn't ship them.
+Pomegranate also uses, when they are installed on the PC, Microsoft Edge (printing simple documents to PDF), Microsoft Office or LibreOffice (Office layouts, OpenDocument and old formats), Windows' own PDF renderer and Windows' text recognition (Copy text). They are the PC's own software under their own licenses; Pomegranate doesn't ship them.
 
 ## SharpCompress 0.50.10 (MIT)
 

@@ -104,6 +104,8 @@ public partial class SettingsWindow : Window
 
     private void OnResetQuality(object sender, RoutedEventArgs e) => _model.ResetQuality();
 
+    private void OnResetTools(object sender, RoutedEventArgs e) => _model.ResetTools();
+
     private void OnShowWelcome(object sender, RoutedEventArgs e) => _showWelcome();
 
     private void OnOpenLogs(object sender, RoutedEventArgs e)

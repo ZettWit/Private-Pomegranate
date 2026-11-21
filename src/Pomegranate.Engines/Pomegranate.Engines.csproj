@@ -15,6 +15,8 @@
     <PackageReference Include="Magick.NET-Q16-AnyCPU" />
     <PackageReference Include="MiniExcel" />
     <PackageReference Include="PdfPig" />
+    <PackageReference Include="PDFsharp" />
     <PackageReference Include="SharpCompress" />
+    <PackageReference Include="ZXing.Net" />
   </ItemGroup>
 </Project>

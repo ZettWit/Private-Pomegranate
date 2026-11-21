@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Pomegranate.App.Actions;
 using Pomegranate.App.Conversion;
+using Pomegranate.App.Tools;
 using Pomegranate.App.Infrastructure;
 using Pomegranate.App.Input;
 using Pomegranate.App.Wheel;
@@ -31,6 +32,7 @@ internal sealed class AppController : IDisposable
     private readonly WheelWindow _wheel;
     private readonly ProgressWindow _progress;
     private readonly ConversionCoordinator _conversions;
+    private readonly ToolCoordinator _tools;
     private readonly ActionRunner _actions;
     private readonly GlobalInputHook _hook;
     private readonly HotkeyManager _hotkey;
@@ -56,9 +58,15 @@ internal sealed class AppController : IDisposable
         _tray = new TrayIcon(ShowSettings, ShowWelcome, TogglePause, Quit);
         _progress = new ProgressWindow();
         _conversions = new ConversionCoordinator(() => _runner, _settings, _tray, _progress, _dispatcher);
+        var toolRunner = _engines.CreateToolRunner();
+        _tools = new ToolCoordinator(toolRunner, _engines, _settings, _tray, _progress, _dispatcher);
         _actions = new ActionRunner(_settings, new ShareHost(), () => _float ??= new FloatWindow(), _tray);
 
-        var builder = new WheelContentBuilder(() => new DropAnalyzer(_engines.Catalog), () => _settings.Current);
+        var builder = new WheelContentBuilder(
+            () => new DropAnalyzer(_engines.Catalog),
+            () => toolRunner.Catalog,
+            () => _engines.Catalog,
+            () => _settings.Current);
         _wheel = new WheelWindow(builder.Build);
         _wheel.Chosen += (_, choice) => Execute(choice);
         _wheel.Dismissed += (_, _) => _hook!.WheelClosed();
@@ -158,6 +166,9 @@ internal sealed class AppController : IDisposable
         {
             case ConvertItem convert:
                 _conversions.Start(choice.Paths, convert.Target);
+                break;
+            case ToolItem tool:
+                _tools.Start(tool, choice.Paths);
                 break;
             case FolderItem folder:
                 _actions.Run(folder.Action, choice.Paths, folder.Path);

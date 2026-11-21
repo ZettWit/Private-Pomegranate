@@ -202,6 +202,44 @@
                 </Grid>
             </Border>
 
+            <!-- Tools: what the Compress levels mean -->
+            <DockPanel Margin="0,20,0,8">
+                <Button DockPanel.Dock="Right" Content="{l:Loc Settings_ResetQuality}" Click="OnResetTools" VerticalAlignment="Center" />
+                <TextBlock Style="{StaticResource Section}" Margin="0" Text="{l:Loc Settings_Tools}" />
+            </DockPanel>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                <TextBlock Style="{StaticResource Hint}" Text="{l:Loc Settings_ToolsHint}" Margin="0,0,0,8" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" /><ColumnDefinition Width="90" /><ColumnDefinition Width="90" /><ColumnDefinition Width="90" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="1" Text="{l:Loc Settings_LevelLight}" HorizontalAlignment="Center" Opacity="0.75" />
+                    <TextBlock Grid.Column="2" Text="{l:Loc Settings_LevelMedium}" HorizontalAlignment="Center" Opacity="0.75" />
+                    <TextBlock Grid.Column="3" Text="{l:Loc Settings_LevelStrong}" HorizontalAlignment="Center" Opacity="0.75" />
+                    <TextBlock Grid.Row="1" Text="{l:Loc Settings_CompressImageQuality}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ImageQualityLight, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelLight}" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding ImageQualityMedium, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelMedium}" />
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding ImageQualityStrong, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelStrong}" />
+                    <TextBlock Grid.Row="2" Text="{l:Loc Settings_CompressVideoCrf}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding VideoCrfLight, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelLight}" />
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding VideoCrfMedium, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelMedium}" />
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding VideoCrfStrong, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelStrong}" />
+                    <TextBlock Grid.Row="3" Text="{l:Loc Settings_CompressAudioKbps}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding AudioKbpsLight, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelLight}" />
+                    <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding AudioKbpsMedium, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelMedium}" />
+                    <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding AudioKbpsStrong, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelStrong}" />
+                    <TextBlock Grid.Row="4" Text="{l:Loc Settings_CompressPdfDpi}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PdfDpiLight, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelLight}" />
+                    <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding PdfDpiMedium, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelMedium}" />
+                    <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding PdfDpiStrong, UpdateSourceTrigger=LostFocus}" Margin="4,4" HorizontalContentAlignment="Right" AutomationProperties.Name="{l:Loc Settings_LevelStrong}" />
+                </Grid>
+                </StackPanel>
+            </Border>
+
             <!-- About -->
             <TextBlock Style="{StaticResource Section}" Text="{l:Loc Settings_About}" />
             <Border Style="{StaticResource Card}">

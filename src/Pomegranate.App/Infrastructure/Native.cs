@@ -37,6 +37,8 @@ internal static partial class Native
 
     public const uint INPUT_MOUSE = 0;
     public const uint MOUSEEVENTF_MOVE = 0x0001;
+    public const uint INPUT_KEYBOARD = 1;
+    public const uint KEYEVENTF_KEYUP = 0x0002;
 
     public const int VK_SHIFT = 0x10;
     public const int VK_CONTROL = 0x11;
@@ -122,6 +124,16 @@ internal static partial class Native
         public IntPtr dwExtraInfo;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KEYBDINPUT
+    {
+        public ushort wVk;
+        public ushort wScan;
+        public uint dwFlags;
+        public uint time;
+        public IntPtr dwExtraInfo;
+    }
+
     [StructLayout(LayoutKind.Explicit)]
     public struct INPUT
     {
@@ -131,6 +143,9 @@ internal static partial class Native
         // The union is aligned to pointer size on 64-bit.
         [FieldOffset(8)]
         public MOUSEINPUT mi;
+
+        [FieldOffset(8)]
+        public KEYBDINPUT ki;
     }
 
     [LibraryImport("user32.dll", SetLastError = true)]

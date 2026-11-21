@@ -3,18 +3,28 @@ using Pomegranate.Core.Settings;
 
 namespace Pomegranate.Core.Jobs;
 
-/// <summary>A set of files dropped together onto one target format.</summary>
+/// <summary>A set of files dropped together onto one target format or tool.</summary>
 public sealed class ConversionBatch
 {
     private readonly CancellationTokenSource _cts;
 
     internal ConversionBatch(FileFormat target, CancellationTokenSource cts)
+        : this(target.Label, cts)
     {
         Target = target;
+    }
+
+    internal ConversionBatch(string label, CancellationTokenSource cts)
+    {
+        Label = label;
         _cts = cts;
     }
 
-    public FileFormat Target { get; }
+    /// <summary>The target format's label, or the tool's name.</summary>
+    public string Label { get; }
+
+    /// <summary>The target format of a conversion; null for a tool.</summary>
+    public FileFormat? Target { get; }
 
     public IReadOnlyList<ConversionJob> Jobs { get; internal set; } = [];
 
@@ -110,8 +120,9 @@ public sealed class JobRunner
 
     private async Task RunAsync(ConversionJob job, QualitySettings quality, string? outputFolder, OutputNamer namer)
     {
+        var target = job.Target!;
         var format = _catalog.Detect(job.SourcePath);
-        if (format == job.Target)
+        if (format == target)
         {
             job.Finish(JobStatus.Skipped);
             return;
@@ -119,7 +130,7 @@ public sealed class JobRunner
 
         if (job.Rule is not { } rule)
         {
-            job.Finish(JobStatus.Failed, error: $"Can't convert {Path.GetFileName(job.SourcePath)} to {job.Target.Label}.");
+            job.Finish(JobStatus.Failed, error: $"Can't convert {Path.GetFileName(job.SourcePath)} to {target.Label}.");
             return;
         }
 
@@ -131,7 +142,7 @@ public sealed class JobRunner
 
         var folder = outputFolder ?? Path.GetDirectoryName(Path.GetFullPath(job.SourcePath)) ?? ".";
         var baseName = _catalog.BaseName(job.SourcePath);
-        var extension = job.Target.PrimaryExtension;
+        var extension = target.PrimaryExtension;
         var planned = namer.Reserve(folder, baseName, extension);
         var temp = OutputNamer.TemporaryPathFor(planned);
         var work = OutputNamer.TemporaryFolderIn(folder);
@@ -158,19 +169,19 @@ public sealed class JobRunner
         }
         catch (OperationCanceledException)
         {
-            DeleteQuietly(temp);
+            OutputFiles.DeleteQuietly(temp);
             namer.Release(planned);
             job.Finish(JobStatus.Canceled);
         }
         catch (Exception ex)
         {
-            DeleteQuietly(temp);
+            OutputFiles.DeleteQuietly(temp);
             namer.Release(planned);
             job.Finish(JobStatus.Failed, error: ex.Message);
         }
         finally
         {
-            DeleteFolderQuietly(work);
+            OutputFiles.DeleteFolderQuietly(work);
         }
     }
 
@@ -189,7 +200,7 @@ public sealed class JobRunner
                 throw new ConversionException("The engine finished but wrote no file.");
             }
 
-            return (Commit(temp, planned, folder, baseName, extension, namer), 1);
+            return (OutputFiles.Commit(temp, planned, folder, baseName, extension, namer), 1);
         }
 
         foreach (var part in output.Parts)
@@ -202,94 +213,26 @@ public sealed class JobRunner
 
         if (output.Parts.Count == 1)
         {
-            return (Commit(output.Parts[0].TempPath, planned, folder, baseName, extension, namer), 1);
+            return (OutputFiles.Commit(output.Parts[0].TempPath, planned, folder, baseName, extension, namer), 1);
         }
 
         namer.Release(planned);
         if (output.GroupInFolder)
         {
-            var pages = namer.Reserve(folder, $"{baseName} (pages)", extension: null);
-            Directory.CreateDirectory(pages);
-            foreach (var part in output.Parts)
-            {
-                File.Move(part.TempPath, Path.Combine(pages, $"{baseName} - {SafeName(part.Suffix)}.{extension}"));
-            }
-
+            var pages = OutputFiles.CommitPages(output.Parts, folder, baseName, extension, namer);
             return (pages, output.Parts.Count);
         }
 
         string? first = null;
         foreach (var part in output.Parts)
         {
-            var name = $"{baseName} - {SafeName(part.Suffix)}";
-            var target = namer.Reserve(folder, name, extension);
-            var final = Commit(part.TempPath, target, folder, name, extension, namer);
+            var name = $"{baseName} - {OutputFiles.SafeName(part.Suffix)}";
+            var reserved = namer.Reserve(folder, name, extension);
+            var final = OutputFiles.Commit(part.TempPath, reserved, folder, name, extension, namer);
             first ??= final;
         }
 
         return (first!, output.Parts.Count);
-    }
-
-    /// <summary>Sheet names and the like can contain characters Windows doesn't allow in file names.</summary>
-    private static string SafeName(string value)
-    {
-        var invalid = Path.GetInvalidFileNameChars();
-        var cleaned = new string(value.Select(c => invalid.Contains(c) ? '_' : c).ToArray()).Trim().TrimEnd('.');
-        return cleaned.Length == 0 ? "part" : cleaned;
-    }
-
-    /// <summary>Renames the temporary file to its final name, choosing a new name if another file took it meanwhile.</summary>
-    private static string Commit(string temp, string planned, string folder, string baseName, string extension, OutputNamer namer)
-    {
-        var target = planned;
-        for (var attempt = 0; attempt < 100; attempt++)
-        {
-            try
-            {
-                File.Move(temp, target, overwrite: false);
-                return target;
-            }
-            catch (IOException) when (File.Exists(target) || Directory.Exists(target))
-            {
-                target = namer.Reserve(folder, baseName, extension);
-            }
-        }
-
-        throw new ConversionException("Couldn't find a free file name for the output.");
-    }
-
-    private static void DeleteFolderQuietly(string path)
-    {
-        try
-        {
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, recursive: true);
-            }
-        }
-        catch (IOException)
-        {
-        }
-        catch (UnauthorizedAccessException)
-        {
-        }
-    }
-
-    private static void DeleteQuietly(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch (IOException)
-        {
-        }
-        catch (UnauthorizedAccessException)
-        {
-        }
     }
 
     /// <summary>Reports progress synchronously (unlike <see cref="Progress{T}"/>, which posts to a sync context).</summary>

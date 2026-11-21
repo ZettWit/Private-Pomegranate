@@ -90,6 +90,44 @@ public sealed record QualitySettings
     public int SlideImageWidth { get; init; } = 1920;
 }
 
+/// <summary>One number per Compress level (spec §7.3, §11).</summary>
+public sealed record CompressLevels(int Light, int Medium, int Strong)
+{
+    public int For(Tools.ToolOption level) => level switch
+    {
+        Tools.ToolOption.Light => Light,
+        Tools.ToolOption.Strong => Strong,
+        _ => Medium,
+    };
+}
+
+/// <summary>What the Compress levels mean (spec §11). A 0 cap means "no cap".</summary>
+public sealed record ToolSettings
+{
+    /// <summary>JPEG / WebP / AVIF quality.</summary>
+    public CompressLevels ImageQuality { get; init; } = new(80, 65, 50);
+
+    public CompressLevels ImageMaxSide { get; init; } = new(0, 2560, 1600);
+
+    /// <summary>H.264 CRF; VP9 adds 6.</summary>
+    public CompressLevels VideoCrf { get; init; } = new(26, 28, 31);
+
+    public CompressLevels VideoMaxHeight { get; init; } = new(0, 1080, 720);
+
+    /// <summary>The soundtrack of a compressed video (AAC or Opus).</summary>
+    public CompressLevels VideoAudioKbps { get; init; } = new(128, 96, 64);
+
+    /// <summary>MP3, AAC and WMA bitrate. Opus uses 60% of it.</summary>
+    public CompressLevels AudioKbps { get; init; } = new(160, 128, 96);
+
+    public CompressLevels VorbisQuality { get; init; } = new(4, 3, 1);
+
+    /// <summary>Highest resolution of a PDF's pictures.</summary>
+    public CompressLevels PdfDpi { get; init; } = new(200, 150, 100);
+
+    public CompressLevels PdfJpegQuality { get; init; } = new(80, 70, 55);
+}
+
 /// <summary>Everything the Settings window controls (spec §11).</summary>
 public sealed record PomegranateSettings
 {
@@ -107,6 +145,8 @@ public sealed record PomegranateSettings
     public IReadOnlyList<string> ExcludedApps { get; init; } = [];
 
     public QualitySettings Quality { get; init; } = new();
+
+    public ToolSettings Tools { get; init; } = new();
 
     /// <summary>Folders pinned to the top of the Copy to… / Move to… list.</summary>
     public IReadOnlyList<string> PinnedFolders { get; init; } = [];
@@ -126,10 +166,37 @@ public sealed record PomegranateSettings
         HoldDelayMs = Math.Clamp(HoldDelayMs, 0, MaxHoldDelayMs),
         Hotkey = Hotkey ?? Hotkey.Default,
         Quality = Quality ?? new QualitySettings(),
+        Tools = Normalize(Tools),
         ExcludedApps = ExcludedApps ?? Array.Empty<string>(),
         PinnedFolders = PinnedFolders ?? Array.Empty<string>(),
         RecentFolders = (RecentFolders ?? Array.Empty<string>()).Take(MaxRecentFolders).ToArray(),
     };
+
+    /// <summary>An old settings file has no tool settings, or only some of them.</summary>
+    private static ToolSettings Normalize(ToolSettings? tools)
+    {
+        var defaults = new ToolSettings();
+        if (tools is null)
+        {
+            return defaults;
+        }
+
+        return tools with
+        {
+            ImageQuality = Clamp(tools.ImageQuality ?? defaults.ImageQuality, 1, 100),
+            ImageMaxSide = tools.ImageMaxSide ?? defaults.ImageMaxSide,
+            VideoCrf = Clamp(tools.VideoCrf ?? defaults.VideoCrf, 0, 51),
+            VideoMaxHeight = tools.VideoMaxHeight ?? defaults.VideoMaxHeight,
+            VideoAudioKbps = Clamp(tools.VideoAudioKbps ?? defaults.VideoAudioKbps, 16, 512),
+            AudioKbps = Clamp(tools.AudioKbps ?? defaults.AudioKbps, 16, 512),
+            VorbisQuality = Clamp(tools.VorbisQuality ?? defaults.VorbisQuality, -1, 10),
+            PdfDpi = Clamp(tools.PdfDpi ?? defaults.PdfDpi, 36, 600),
+            PdfJpegQuality = Clamp(tools.PdfJpegQuality ?? defaults.PdfJpegQuality, 1, 100),
+        };
+
+        static CompressLevels Clamp(CompressLevels l, int min, int max) =>
+            new(Math.Clamp(l.Light, min, max), Math.Clamp(l.Medium, min, max), Math.Clamp(l.Strong, min, max));
+    }
 
     /// <summary>Moves <paramref name="folder"/> to the front of the recent list.</summary>
     public PomegranateSettings WithRecentFolder(string folder) => this with

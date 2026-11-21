@@ -57,6 +57,12 @@ public enum EngineKind
 
     /// <summary>Microsoft Edge, headless and offline: simple text formats to PDF.</summary>
     WebPdf,
+
+    /// <summary>PDFsharp: the PDF tools (merge, split, pages, compress, metadata).</summary>
+    PdfTools,
+
+    /// <summary>ZXing.Net and Windows' text recognition: reading QR codes and text from images.</summary>
+    Recognition,
 }
 
 /// <summary>

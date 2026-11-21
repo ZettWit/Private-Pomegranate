@@ -104,7 +104,9 @@ public partial class ProgressWindow : Window
 
         public ConversionJob Job { get; } = job;
 
-        public string Name => $"{Path.GetFileName(Job.SourcePath)} → {Job.Target.Label}";
+        public string Name => Job.Sources.Count > 1
+            ? $"{Path.GetFileName(Job.SourcePath.TrimEnd('\\'))} (+{Job.Sources.Count - 1}) → {Job.Label}"
+            : $"{Path.GetFileName(Job.SourcePath.TrimEnd('\\'))} → {Job.Label}";
 
         public double Percent => Job.Progress * 100;
 

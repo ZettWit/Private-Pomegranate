@@ -154,6 +154,35 @@ internal sealed class SettingsViewModel : INotifyPropertyChanged
 
     public int SlideImageWidth { get => S.Quality.SlideImageWidth; set => Q(q => q with { SlideImageWidth = value }); }
 
+    public int ImageQualityLight { get => S.Tools.ImageQuality.Light; set => T(t => t with { ImageQuality = t.ImageQuality with { Light = value } }); }
+
+    public int ImageQualityMedium { get => S.Tools.ImageQuality.Medium; set => T(t => t with { ImageQuality = t.ImageQuality with { Medium = value } }); }
+
+    public int ImageQualityStrong { get => S.Tools.ImageQuality.Strong; set => T(t => t with { ImageQuality = t.ImageQuality with { Strong = value } }); }
+
+    public int VideoCrfLight { get => S.Tools.VideoCrf.Light; set => T(t => t with { VideoCrf = t.VideoCrf with { Light = value } }); }
+
+    public int VideoCrfMedium { get => S.Tools.VideoCrf.Medium; set => T(t => t with { VideoCrf = t.VideoCrf with { Medium = value } }); }
+
+    public int VideoCrfStrong { get => S.Tools.VideoCrf.Strong; set => T(t => t with { VideoCrf = t.VideoCrf with { Strong = value } }); }
+
+    public int AudioKbpsLight { get => S.Tools.AudioKbps.Light; set => T(t => t with { AudioKbps = t.AudioKbps with { Light = value } }); }
+
+    public int AudioKbpsMedium { get => S.Tools.AudioKbps.Medium; set => T(t => t with { AudioKbps = t.AudioKbps with { Medium = value } }); }
+
+    public int AudioKbpsStrong { get => S.Tools.AudioKbps.Strong; set => T(t => t with { AudioKbps = t.AudioKbps with { Strong = value } }); }
+
+    public int PdfDpiLight { get => S.Tools.PdfDpi.Light; set => T(t => t with { PdfDpi = t.PdfDpi with { Light = value } }); }
+
+    public int PdfDpiMedium { get => S.Tools.PdfDpi.Medium; set => T(t => t with { PdfDpi = t.PdfDpi with { Medium = value } }); }
+
+    public int PdfDpiStrong { get => S.Tools.PdfDpi.Strong; set => T(t => t with { PdfDpi = t.PdfDpi with { Strong = value } }); }
+
+    public void ResetTools() => Set(s => s with { Tools = new ToolSettings() });
+
+    private void T(Func<ToolSettings, ToolSettings> change, [CallerMemberName] string? name = null) =>
+        Set(s => s with { Tools = change(s.Tools) }, name);
+
     public void ResetQuality() => Set(s => s with { Quality = new QualitySettings() });
 
     private void Q(Func<QualitySettings, QualitySettings> change) => Set(s => s with { Quality = change(s.Quality) });

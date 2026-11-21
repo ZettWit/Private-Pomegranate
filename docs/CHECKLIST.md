@@ -1,4 +1,4 @@
-# v1 by-hand checklist
+# By-hand checklist
 
 Automated tests cover the conversion table, file naming, settings and wheel geometry. The things below need a person, a mouse and real apps. Tick them on your PC before calling v1 done.
 
@@ -16,7 +16,7 @@ The tray icon appears and, the first time, the welcome window opens. Quit from t
 - [ ] Drop on **WebP**: `sample.webp` appears in the sample folder; a notification says "Converted to WebP"; clicking it shows the file in Explorer.
 - [ ] Drag a file **from File Explorer**, hold Shift, drop on a format. Same result next to the original.
 - [ ] Same from the **desktop** and from **Explorer search results**.
-- [ ] While the wheel is open, press **Alt**: it switches to Actions. **Ctrl**: Tools ("coming in a later version").
+- [ ] While the wheel is open, press **Alt**: it switches to Actions. **Ctrl**: Tools.
 - [ ] Let go of Shift with the wheel open: it stays open.
 - [ ] Drop on the **center**: nothing happens, and the file stays where it was.
 - [ ] Press **Esc** mid-drag: the wheel and the drag both cancel.
@@ -80,6 +80,40 @@ The tray icon appears and, the first time, the welcome window opens. Quit from t
 - [ ] A password-protected DOCX or PDF: the notification says it's password-protected; nothing hangs.
 - [ ] While a Word/Excel conversion runs, open Word or Excel yourself: your window works normally, and after the conversion no hidden Office copy is left in Task Manager.
 - [ ] With PowerPoint already open, convert a PPTX → PDF: your PowerPoint stays open.
+
+## v3: tools (hold Ctrl)
+
+Instant tools:
+
+- [ ] A phone photo → **Compress** (drop on the tool itself = Medium): `photo (compressed).jpg`, smaller, upright. Hover Compress: Light / Medium / Strong on the outer ring.
+- [ ] Compress the result again with Light: the notification says it's already as small as it gets, and no file appears.
+- [ ] **Resize** → 1920 px on a big photo; on a small one it says it's already that small.
+- [ ] **Rotate** → Left, Right, 180°, Flip on a photo and on a video.
+- [ ] **Strip metadata** on a phone photo with location: File Explorer → Properties → Details shows no GPS, camera or date taken; the picture is upright and its colors unchanged.
+- [ ] **Read QR code** on a screenshot of a QR code: the text is on the clipboard and in the notification; a link isn't opened.
+- [ ] **Copy text** on a screenshot of a web page: the text is on the clipboard.
+- [ ] A video → **Compress**, **Speed** (2×, 0.5×), **Mute**, **Extract audio** (`clip.m4a` for an iPhone video), **Strip metadata**.
+- [ ] A quiet recording → **Normalize**: clearly louder, no clipping.
+- [ ] Two PDFs `Part 2.pdf` and `Part 10.pdf` → **Merge**: `Part 2 (merged).pdf`, Part 2's pages first.
+- [ ] A PDF → **Split**: a `(pages)` folder; a one-page PDF says it has only one page.
+- [ ] A scanned PDF → **Compress**: smaller, text still selectable.
+- [ ] A folder → the Tools wheel offers only **Zip**; several files → `<folder name>.zip`.
+- [ ] A ZIP whose contents sit in one folder → **Extract**: one folder, not a folder inside a folder.
+- [ ] Select an image and a video together: Compress, Rotate and Strip metadata are offered; editors aren't.
+
+Editors (one file at a time; Enter saves, Esc cancels, Ctrl+Z undoes):
+
+- [ ] The editor window comes to the front with the keyboard focus after a drop from Explorer.
+- [ ] **Crop** a photo with 16:9, then a video (the slider shows other frames). Output sizes are right; the video plays.
+- [ ] **Trim** an audio file: Space plays the kept part; the result starts and ends where the handles were.
+- [ ] **Trim** a video: the large picture follows the handle; the result is cut at those frames.
+- [ ] **Bleep** two ranges with Bleep, then with Silence; listen to the results.
+- [ ] **Pages**: drag pages to reorder, Ctrl+Left/Right, rotate, delete, Undo; Save gives `(pages).pdf`, Save selection gives `(selection).pdf`.
+- [ ] **Redact** a photo with all three styles: in the result, black boxes are solid, the others unreadable; Properties → Details shows no camera data.
+- [ ] **Redact** a video between two times: the boxes appear only then.
+- [ ] **Annotate**: arrow, rectangle, highlighter, pen and text in a few colors and sizes; the result matches what was drawn.
+- [ ] Narrator reads the editor's buttons, colors and pages.
+- [ ] Settings → **Tools**: change Strong's image quality to 30; Compress → Strong is visibly stronger. Reset to defaults works.
 
 ## Installed MSIX (right-click menu and start with Windows)
 

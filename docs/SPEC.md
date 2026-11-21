@@ -1,6 +1,6 @@
 # Pomegranate — Spec
 
-Status: agreed in the design interview on 2026-11-18. v1 is fully specified. v2 and v3 are scoped here; their details get decided in a short interview at the start of each phase.
+Status: agreed in the design interview on 2026-11-18. v2 details agreed on 2026-11-19 (§7.2), v3 on 2026-11-20 (§7.3).
 
 ## 1. What it is
 
@@ -20,7 +20,7 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 | License | MIT for Pomegranate's code; bundled engines keep their own licenses (see §9) |
 | Price | Free. No trial, no paywall, no conversion limit |
 | Network | None. No telemetry, crash uploads or update checks; the Store and winget handle updates |
-| Install size | Measured on x64 with v2: **222.5 MB download, 681 MB installed**: engines 426 MB (FFmpeg 182, Pandoc 230, dnglab 13) and the app with its own .NET runtime ~255 MB (Store MSIX packages can't use a shared .NET install). v1 alone was 175 / 442 MB. Every bundled engine ships in the package; nothing is downloaded at runtime. Possible later cut: replace the Windows Forms tray icon with direct Win32 calls (~20 MB) |
+| Install size | Measured on x64 with v3: **225 MB download, 686 MB installed**: engines 426 MB (FFmpeg 182, Pandoc 230, dnglab 13) and the app with its own .NET runtime ~260 MB. v2 was 222.5 / 681 MB (Store MSIX packages can't use a shared .NET install). v1 alone was 175 / 442 MB. Every bundled engine ships in the package; nothing is downloaded at runtime. Possible later cut: replace the Windows Forms tray icon with direct Win32 calls (~20 MB) |
 | Language | English in v1. All strings live in `.resx` files so the app can be translated later |
 
 ## 3. Phases
@@ -29,8 +29,8 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 |---|---|
 | **v1** | App shell (tray, settings, first run), drag detection and the wheel, right-click menu, hotkey, keyboard control, conversions for **images, audio, video, archives, subtitles**, all **6 actions** |
 | **v2** | Conversions for **PDF, documents, slides, spreadsheets, EPUB** (§7.2). Built on branch `v2/documents` |
-| **v3** | The **file tools**: compress, crop, trim, split, merge, redact, annotate, strip metadata, speed change, extract audio, read QR, reorder PDF pages, and others. Which tools need their own editor window is decided at the start of v3 |
-| Later | Touch and pen activation, translations |
+| **v3** | The **file tools** (§7.3): 20 tools, 6 of them with an editor window. Built on branch `v3/tools` |
+| Later | Touch and pen activation, translations, remove background (Windows only has an offline engine for it on Copilot+ PCs), PDF passwords, watermarks |
 
 ## 4. How you use it
 
@@ -39,7 +39,7 @@ It borrows its interaction model from Tangerine for Mac (Leap Studio). It is a f
 | Hold while dragging | Wheel |
 |---|---|
 | **Shift** | Convert |
-| **Ctrl** | Tools (v3; in v1 it shows a "Coming soon" ring) |
+| **Ctrl** | Tools (§7.3) |
 | **Alt** | Actions |
 
 - The wheel opens only after the key has been held for **250 ms** during a drag. A quick Shift or Ctrl press still does Explorer's normal move or copy.
@@ -142,6 +142,52 @@ Apple-only formats from Tangerine's list (Pages output, RTFD, text clippings) ar
 - **Edge prints** with a throwaway profile and every network lookup blocked.
 - **ARM64**: Pandoc publishes no Windows ARM64 build; the x64 one runs under Windows' emulation.
 
+### 7.3 v3: file tools
+
+Agreed in the v3 interview (2026-11-20). Tools change a file without changing its type. They open from the **Ctrl** wheel. 20 tools, offered according to the file type. ✎ marks a tool that opens a small editor window; every other tool runs as soon as you drop.
+
+| Files | Tools |
+|---|---|
+| Images | Compress, Resize, Rotate/flip, Crop ✎, Annotate ✎, Redact ✎, Strip metadata, Read QR code, Copy text |
+| Video | Compress, Trim ✎, Crop ✎, Redact ✎, Speed, Rotate, Mute, Extract audio, Strip metadata |
+| Audio | Compress, Trim ✎, Bleep ✎, Speed, Normalize volume, Strip metadata |
+| PDF | Merge (2 or more PDFs), Split (one file per page), Pages ✎ (reorder, rotate, delete, save a selection), Compress, Strip metadata |
+| Any files and folders | Zip (the selection becomes one ZIP); Extract (an archive becomes a folder) |
+
+**Which files.** Image tools that write the image work on JPG, PNG, WebP, TIFF, AVIF and BMP (Compress skips BMP). HEIC, camera RAW and SVG can't be written (§7.1), so they get only Read QR code and Copy text. Video tools work on MP4, MOV, MKV, WebM, AVI and WMV (Compress on the first four); GIF has no tools. Compress for audio works on the lossy formats (MP3, M4A, OGG, Opus, WMA). A tool is offered for several files only when it works for every one of them, like Convert (§4.3). Folders get Zip only.
+
+**Options on the outer ring.** Dropping on the tool itself uses the default (in bold).
+
+| Tool | Options |
+|---|---|
+| Compress | Light, **Medium**, Strong |
+| Resize | **50%**, 25%, long side 3840, 1920 or 1280 px (only ever shrinks) |
+| Speed | 0.5×, 1.5×, **2×**, 4× (sound keeps its pitch) |
+| Rotate | Left, **Right**, 180°, Flip |
+
+**How each tool works.**
+- **Compress.** Images: re-encoded at a lower quality; Medium and Strong also cap the long side. PNG becomes a 256-color PNG at Medium and Strong. Video: H.264 (VP9 for WebM) at a higher CRF; Medium and Strong also cap the height. Audio: a lower bitrate in the same format. PDF: pictures are re-encoded as JPEG and scaled down to a maximum resolution; text and drawings are untouched. If the result isn't smaller, no file is written and the notification says the file is already as small as it gets.
+- **Resize, Rotate** re-encode with the quality settings in §11. Video rotation re-encodes too, so every player shows it the same way.
+- **Strip metadata** removes location, camera, author and editing details. Images keep their color profile, and their rotation is applied first so they don't turn sideways. JPEG and PNG without rotation are cleaned without re-encoding. Video and audio are copied without re-encoding, dropping tags, chapters and cover art. PDF loses its title/author fields and XMP metadata.
+- **Speed, Normalize volume** re-encode with §11's settings. Normalize uses FFmpeg's two-pass loudness normalization (EBU R128, −16 LUFS).
+- **Mute, Extract audio** copy streams without re-encoding, so they're instant and lossless. Extract audio picks the file type from the audio inside (AAC → M4A, MP3 → MP3, Opus → Opus, and so on).
+- **Merge** joins the PDFs in file-name order (numbers sorted as numbers). **Split** puts one PDF per page in a `(pages)` folder, as in §7.2.
+- **Zip** makes one ZIP of everything dropped; folders keep their contents. **Extract** unpacks ZIP, TAR, TAR.GZ and RAR into a new folder named after the archive. If everything inside sits in one folder, that folder's contents go straight in, so you don't get a folder inside a folder. Entries that would land outside the new folder are skipped.
+- **Read QR code, Copy text** put the result on the clipboard and show it in a notification. Links are never opened. Copy text uses Windows' built-in text recognition (OCR) in the languages installed on the PC.
+
+**Editors.** Each is a small Fluent window with a preview, its controls and Save/Cancel. All of them work from the keyboard (Enter saves, Esc cancels, arrow keys nudge, Ctrl+Z undoes). They appear only when one file is dropped.
+
+| Editor | What you do |
+|---|---|
+| Crop (image, video) | Drag the frame or its handles; aspect presets Free, Original, 1:1, 4:3, 16:9, 9:16. Video shows a frame from the clip; a slider picks which. Video crops are rounded to even sizes (H.264 needs them) |
+| Trim (audio, video) | Drag the start and end handles on a timeline: a waveform for audio, a strip of frames for video. Audio can play the selection. Trimming re-encodes, so cuts land exactly where you put them |
+| Bleep (audio) | Mark one or more ranges on the waveform; each becomes a 1 kHz tone or silence |
+| Pages (PDF) | Thumbnails of every page: drag or Ctrl+arrows to reorder, rotate, delete. **Save** writes the whole document; **Save selection** writes only the selected pages |
+| Redact (image, video) | Draw boxes; each becomes a black box (the default, and the only style that can't be undone by sharpening), pixelation or blur. On video the boxes stay put and apply between a start and end time; they don't follow moving objects. A redacted image also loses its metadata, because a camera's embedded thumbnail would still show the original |
+| Annotate (image) | Arrow, rectangle, highlighter, pen and text, in six colors and three sizes |
+
+**Output names.** The original is never changed. The result goes next to it (or into the output folder from Settings) as `name (suffix).ext`, with the usual `(1)` on clashes: `(compressed)`, `(resized)`, `(rotated)`, `(no metadata)`, `(2x)`, `(muted)`, `(normalized)`, `(cropped)`, `(trimmed)`, `(bleeped)`, `(redacted)`, `(annotated)`, `(pages)`, `(selection)`, `(merged)`. Extract audio writes `name.m4a` (or whichever type), Zip writes `name.zip` for one item and `<folder name>.zip` for several, Extract writes the folder `name`.
+
 ## 8. Output rules
 
 - Output goes in the same folder as the original by default. Settings can change it to a fixed folder.
@@ -164,6 +210,9 @@ Apple-only formats from Tangerine's list (Pages output, RTFD, text clippings) ar
 | PdfPig 0.1.16 | PDF text and pictures | Apache-2.0 | NuGet |
 | ExcelDataReader 3.9 | Reading XLS, XLSX | MIT | NuGet |
 | MiniExcel 1.47 | Writing XLSX | Apache-2.0 | NuGet |
+| PDFsharp 6.2.4 | PDF tools: merge, split, pages, compress, metadata | MIT | NuGet. Pinned: 6.2.4 is the last MIT release (6.5 moved to AGPL-3.0, which would force the whole app under AGPL) |
+| ZXing.Net 0.16 | Reading QR codes and barcodes | Apache-2.0 | NuGet |
+| Windows text recognition (Windows.Media.Ocr) | Copy text | Part of Windows | Not bundled; uses the PC's installed languages |
 | Windows PDF renderer (Windows.Data.Pdf) | PDF pages → images | Part of Windows | Not bundled |
 | Microsoft Edge | Markdown, HTML, EPUB, TXT → PDF | The PC's own | Not bundled |
 | Microsoft Office or LibreOffice | Office layouts, OpenDocument, old formats | The PC's own | Not bundled; used only if installed |
@@ -201,8 +250,12 @@ Engine binaries are downloaded at **build** time by `tools/fetch-engines.ps1` fr
 | Audio bitrate | MP3 VBR ~190 kbps, AAC/M4A 192 kbps, Opus 128 kbps, OGG Vorbis quality 5, WMA 192 kbps. WAV/AIFF 16-bit PCM, FLAC lossless |
 | PDF pages as images (v2) | 300 DPI |
 | Slides as images (v2) | 1920 px wide |
+| Compress images (v3) | JPEG/WebP/AVIF quality Light 80, Medium 65, Strong 50; long side capped at 2560 px (Medium) and 1600 px (Strong) |
+| Compress video (v3) | H.264 CRF Light 26, Medium 28, Strong 31 (VP9 +6); height capped at 1080 (Medium) and 720 (Strong); AAC 128 / 96 / 64 kbps |
+| Compress audio (v3) | MP3 160 / 128 / 96 kbps; AAC, WMA and Opus scale the same way; OGG quality 4 / 3 / 1 |
+| Compress PDF pictures (v3) | At most 200 / 150 / 100 DPI, JPEG quality 80 / 70 / 55 |
 
-Converting never shows an options dialog; it always uses these defaults.
+Converting never shows an options dialog; it always uses these defaults. The compress levels have their own section in Settings.
 
 ## 12. Architecture
 
@@ -210,9 +263,12 @@ Converting never shows an options dialog; it always uses these defaults.
 
 ```
 src/
-  Pomegranate.App/       WPF: tray, wheel overlay, settings, first run, Float tray. MSIX packaging lives here.
-  Pomegranate.Core/      No UI: format catalog, job queue, output naming, settings model. Fully unit-testable.
-  Pomegranate.Engines/   Adapters for FFmpeg, Magick.NET, SharpCompress, subtitles, dnglab.
+  Pomegranate.App/       WPF: tray, wheel overlay, settings, first run, Float tray, the tool editors (Editors/).
+                         MSIX packaging lives here.
+  Pomegranate.Core/      No UI: format catalog, tool catalog, job and tool runners, output naming, settings model.
+                         Fully unit-testable.
+  Pomegranate.Engines/   Adapters for FFmpeg, Magick.NET, SharpCompress, subtitles, dnglab, Pandoc, Office,
+                         PdfPig, PDFsharp, ZXing.Net and Windows' PDF renderer and OCR (Tools/ holds the tools).
   Pomegranate.Shell/     Small C++ DLL: the Windows 11 right-click command (IExplorerCommand). Built by
                          tools/build-shell.ps1, not part of the .NET solution.
 tests/
@@ -288,10 +344,24 @@ Still to check:
 | PdfPig | All text recovered, including a table |
 | LibreOffice | Not installed on the test PC, so its path is untested here. CI can install it to cover it |
 
+### 13.2 v3 tool check (2026-11-20, x64)
+
+| Question | Result |
+|---|---|
+| PDFsharp license | 6.5.0 (the newest) is **AGPL-3.0**; 6.2.4 is the last MIT release, so it's pinned there (§9) |
+| PDFsharp's dependency | It asks for System.Security.Cryptography.Pkcs 8.0.1, which has known vulnerabilities; pinned to 10.0.15 |
+| Windows OCR | Reads a rendered test line correctly with the PC's English language pack |
+| ZXing.Net | Reads back a generated QR code exactly |
+| Lossless metadata strip | JPEG and PNG come out pixel-identical, without EXIF, XMP, comments or text chunks; the color profile stays |
+| FFmpeg filters | A separate `-vf` can't follow a `-filter_complex` stream, so Speed and Redact do the even-size scaling inside the graph |
+| Editors | All six render in light and dark themes; the Annotate layer is saved at the picture's full size |
+
 ## 14. Known limits
 
 - Windows blocks the wheel over apps running as administrator (e.g. an admin Explorer window or Task Manager). This is a Windows security rule (UIPI) that Pomegranate cannot work around.
 - Touch and pen activation come later.
+- Video redaction boxes don't follow moving objects (§7.3).
+- Copy text only reads languages installed in Windows (Settings → Time & language → Language & region).
 
 ## 15. Testing
 
@@ -339,5 +409,13 @@ Still to check:
 | 33 | Several pages go into a `(pages)` folder; one page is one file |
 | 34 | 300 DPI for PDF pages and 1920 px for slides, both adjustable in Settings |
 | 35 | Password-protected files fail with a clear message; no prompts |
+| 36 | v3 tools: the 20 in §7.3; remove background, PDF passwords and watermarks later |
+| 37 | Tool options on the outer ring; dropping on the tool uses its default; compress levels adjustable in Settings |
+| 38 | Tools never overwrite: `name (suffix).ext` next to the original |
+| 39 | Instant tools run on every selected file; Merge in file-name order; editors only for one file |
+| 40 | QR and OCR results go to the clipboard and a notification; links never open |
+| 41 | PDFsharp (MIT) for PDF tools, ZXing.Net (Apache-2.0) for codes, Windows OCR; no new bundled programs |
+| 42 | Instant tools first, then editors: Crop, Trim/Bleep, Pages, Redact, Annotate |
+| 43 | v2 committed on `v2/documents`; v3 on `v3/tools` |
 
 Defaults I picked that weren't discussed (easy to change): the quality values in §11, the Win+Alt+C hotkey, the concurrency limits in §8, the Float tray holding references rather than copies, and dropping in the wheel's center to cancel.

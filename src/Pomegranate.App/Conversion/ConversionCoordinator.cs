@@ -33,7 +33,7 @@ internal sealed class ConversionCoordinator(
 
         foreach (var job in failed)
         {
-            Log.Error($"Converting {job.SourcePath} to {job.Target.Label} failed: {job.Error}");
+            Log.Error($"Converting {job.SourcePath} to {job.Label} failed: {job.Error}");
         }
 
         foreach (var job in converted)
@@ -69,7 +69,7 @@ internal sealed class ConversionCoordinator(
 
         // A pages folder opens; a file is shown selected in its folder.
         Action open = Directory.Exists(firstOutput) ? () => OpenFolder(firstOutput) : () => ShowInExplorer(firstOutput);
-        tray.Notify(L.Format("Notify_ConvertedTitle", batch.Target.Label), text, onClick: open);
+        tray.Notify(L.Format("Notify_ConvertedTitle", batch.Label), text, onClick: open);
     }
 
     public static void ShowInExplorer(string path)

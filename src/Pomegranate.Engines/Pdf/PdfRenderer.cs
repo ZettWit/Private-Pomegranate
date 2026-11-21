@@ -14,8 +14,15 @@ internal static class PdfRenderer
 
     /// <summary>Renders every page to <c>page-N.png</c> in <paramref name="folder"/> at <paramref name="dpi"/>.</summary>
     /// <param name="maxWidth">Optional cap on the pixel width (for slides).</param>
+    /// <param name="onPage">Called with each page's 0-based index and file as soon as it's written.</param>
     public static async Task<IReadOnlyList<string>> RenderAsync(
-        string pdfPath, string folder, int dpi, IProgress<double>? progress, CancellationToken cancellationToken, int? maxWidth = null)
+        string pdfPath,
+        string folder,
+        int dpi,
+        IProgress<double>? progress,
+        CancellationToken cancellationToken,
+        int? maxWidth = null,
+        Action<int, string>? onPage = null)
     {
         var document = await LoadAsync(pdfPath).ConfigureAwait(false);
         var files = new List<string>();
@@ -50,6 +57,7 @@ internal static class PdfRenderer
             }
 
             files.Add(file);
+            onPage?.Invoke((int)i, file);
             progress?.Report((i + 1.0) / document.PageCount);
         }
 
@@ -60,6 +68,9 @@ internal static class PdfRenderer
 
         return files;
     }
+
+    /// <summary>How many pages the PDF has, without rendering any.</summary>
+    public static async Task<int> PageCountAsync(string pdfPath) => (int)(await LoadAsync(pdfPath).ConfigureAwait(false)).PageCount;
 
     private static async Task<PdfDocument> LoadAsync(string pdfPath)
     {
